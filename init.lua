@@ -1,6 +1,7 @@
 hs.loadSpoon("AClock")
 hs.loadSpoon("Calendar")
 hs.loadSpoon("Emojis")
+hs.loadSpoon("ReloadConfiguration")
 local spotify = require("spotify")
 
 spoon.AClock:init()
@@ -12,6 +13,4 @@ spoon.Emojis:bindHotkeys({
     toggle = {{"cmd", "alt", "ctrl"}, "E"}
 })
 
-hs.loadSpoon("ReloadConfiguration")
 spoon.ReloadConfiguration:start()
-hs.alert.show("Config loaded")
