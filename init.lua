@@ -1,6 +1,7 @@
 hs.loadSpoon("AClock")
 hs.loadSpoon("Calendar")
 hs.loadSpoon("Emojis")
+local spotify = require("spotify")
 
 spoon.AClock:init()
 hs.hotkey.bind({"cmd", "alt", "ctrl"}, "C", function()
