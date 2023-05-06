@@ -1,6 +1,6 @@
 hs.loadSpoon("AClock")
-hs.loadSpoon("FloatCalendar")
 hs.loadSpoon("Emojis")
+hs.loadSpoon("FloatCalendar")
 hs.loadSpoon("ReloadConfiguration")
 local spotify = require("spotify")
 
