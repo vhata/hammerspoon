@@ -2,6 +2,7 @@ hs.loadSpoon("AClock")
 hs.loadSpoon("Emojis")
 hs.loadSpoon("FloatCalendar")
 hs.loadSpoon("ReloadConfiguration")
+local expanse = require("expanse")
 local spotify = require("spotify")
 
 spoon.AClock:init()
