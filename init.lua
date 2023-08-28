@@ -4,6 +4,7 @@ hs.loadSpoon("FloatCalendar")
 hs.loadSpoon("ReloadConfiguration")
 local expanse = require("expanse")
 local spotify = require("spotify")
+local hyper = require("hyper")
 
 spoon.AClock:init()
 hs.hotkey.bind({"cmd", "alt", "ctrl"}, "C", function()
