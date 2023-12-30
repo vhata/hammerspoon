@@ -88,7 +88,7 @@ function obj:init()
     end
 
     self.chooser = hs.chooser.new(self.callback)
-    self.chooser:rows(5)
+    self.chooser:rows(15)
     self.chooser:searchSubText(true)
     self.chooser:choices(self.choices)
     print("Emojis Spoon: Startup completed")
