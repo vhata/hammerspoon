@@ -1,10 +1,11 @@
-local hyper = { "cmd", "alt", "ctrl", "shift" }
+local hyper = { "cmd", "alt", "ctrl"}
 
 local applicationHotkeys = {
     c = 'Google Chrome',
     t = 'iTerm',
     s = 'Spotify',
-    v = 'Visual Studio Code',
+    e = 'Visual Studio Code',
+    v = 'Vivaldi',
     o = 'Obsidian',
     d = 'Discord',
     w = 'Discord Canary',
