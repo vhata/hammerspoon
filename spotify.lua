@@ -37,3 +37,4 @@ function spotifyPlaying()
 end
 
 hs.hotkey.bind({}, "f14", spotifyPlaying)
+hs.hotkey.bind({}, "pad/", spotifyPlaying)
