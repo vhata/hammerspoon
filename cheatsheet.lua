@@ -16,7 +16,7 @@ function M.toggle()
     f:close()
 
     local screen = hs.screen.mainScreen():frame()
-    local w, h = math.min(900, screen.w * 0.7), screen.h * 0.85
+    local w, h = math.min(1200, screen.w * 0.85), screen.h * 0.85
 
     local jsPath = os.getenv("HOME") .. "/.hammerspoon/marked.min.js"
     local jf = io.open(jsPath, "r")
@@ -26,12 +26,15 @@ function M.toggle()
     local html = [[<html><head>
     <script>]] .. markedJs .. [[</script>
     <style>
-        body { font-family: -apple-system, system-ui, sans-serif; background: #1e1e2e; color: #cdd6f4; padding: 24px 32px; }
-        h1 { color: #cba6f7; font-size: 22px; } h2 { color: #89b4fa; font-size: 15px; text-transform: uppercase; }
-        table { width: 100%; border-collapse: collapse; } th { color: #6c7086; font-size: 11px; text-transform: uppercase; text-align: left; }
-        td, th { padding: 4px 10px; border-bottom: 1px solid #313244; font-size: 13px; } tr:hover { background: #252536; }
-        code { background: #313244; color: #f38ba8; padding: 1px 6px; border-radius: 4px; font-family: "SF Mono", Menlo, monospace; font-size: 12px; }
-        p { color: #a6adc8; font-size: 13px; }
+        body { font-family: -apple-system, system-ui, sans-serif; background: #1e1e2e; color: #cdd6f4; padding: 20px 28px; }
+        h1 { color: #cba6f7; font-size: 20px; margin-bottom: 12px; column-span: all; }
+        #content { columns: 2; column-gap: 28px; }
+        h2 { color: #89b4fa; font-size: 13px; text-transform: uppercase; margin: 8px 0 4px; break-after: avoid; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 6px; break-inside: avoid; }
+        th { color: #6c7086; font-size: 10px; text-transform: uppercase; text-align: left; }
+        td, th { padding: 2px 8px; border-bottom: 1px solid #313244; font-size: 12px; } tr:hover { background: #252536; }
+        code { background: #313244; color: #f38ba8; padding: 1px 5px; border-radius: 4px; font-family: "SF Mono", Menlo, monospace; font-size: 11px; }
+        p { color: #a6adc8; font-size: 12px; margin: 2px 0; }
     </style></head><body><div id="content"></div>
     <script>document.getElementById('content').innerHTML = marked.parse(]] .. "\"" .. md:gsub("\\", "\\\\"):gsub("\"", "\\\""):gsub("\n", "\\n"):gsub("\r", "") .. "\"" .. [[);
     </script></body></html>]]
