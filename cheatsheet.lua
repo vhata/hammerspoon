@@ -33,7 +33,7 @@ function M.toggle()
         code { background: #313244; color: #f38ba8; padding: 1px 6px; border-radius: 4px; font-family: "SF Mono", Menlo, monospace; font-size: 12px; }
         p { color: #a6adc8; font-size: 13px; }
     </style></head><body><div id="content"></div>
-    <script>document.getElementById('content').innerHTML = marked.parse(]] .. hs.json.encode(md) .. [[);
+    <script>document.getElementById('content').innerHTML = marked.parse(]] .. "\"" .. md:gsub("\\", "\\\\"):gsub("\"", "\\\""):gsub("\n", "\\n"):gsub("\r", "") .. "\"" .. [[);
     </script></body></html>]]
 
     webview = hs.webview.new(hs.geometry.rect((screen.w - w) / 2, (screen.h - h) / 2, w, h))
