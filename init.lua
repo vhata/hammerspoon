@@ -17,6 +17,6 @@ leader.bind("e", function()
     local c = spoon.Emojis.chooser
     if c:isVisible() then c:hide() else c:show() end
 end)
-leader.bind("n", function() cheatsheet.toggle() end)
+leader.bind("v", function() cheatsheet.toggle() end)
 
 spoon.ReloadConfiguration:start()
