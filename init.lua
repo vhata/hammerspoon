@@ -5,18 +5,18 @@ hs.loadSpoon("ReloadConfiguration")
 local expanse = require("expanse")
 local spotify = require("spotify")
 local hyper = require("hyper")
+local cheatsheet = require("cheatsheet")
+local leader = require("leader")
 
 spoon.AClock:init()
-hs.hotkey.bind({"cmd", "alt", "ctrl", "shift"}, "C", function()
-    spoon.AClock:toggleShow()
-end)
 
-hs.hotkey.bind({"cmd", "alt", "ctrl", "shift"}, "L", function()
-    spoon.FloatCalendar:toggleShow()
+-- Double-tap right Ctrl, then press a key:
+leader.bind("c", function() spoon.AClock:toggleShow() end)
+leader.bind("l", function() spoon.FloatCalendar:toggleShow() end)
+leader.bind("e", function()
+    local c = spoon.Emojis.chooser
+    if c:isVisible() then c:hide() else c:show() end
 end)
-
-spoon.Emojis:bindHotkeys({
-    toggle = {{"cmd", "alt", "ctrl", "shift"}, "E"}
-})
+leader.bind("n", function() cheatsheet.toggle() end)
 
 spoon.ReloadConfiguration:start()
