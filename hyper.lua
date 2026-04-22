@@ -12,7 +12,7 @@ local applicationHotkeys = {
   for key, app in pairs(applicationHotkeys) do
     hs.hotkey.bind(hyper, key, function()
       hs.application.launchOrFocus(app)
-      app_name = string.gsub(app, " ", "_") .. "_0"
+      local app_name = string.gsub(app, " ", "_") .. "_0"
       local j, st, t, rc = hs.execute("embiggen " .. app_name, true)
     end)
   end

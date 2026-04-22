@@ -12,14 +12,14 @@ local function tell(cmd)
 end
 
 local function albumart()
-    uri = tell('artwork url of current track')
+    local uri = tell('artwork url of current track')
     if uri == nil then
         return nil
     end
     return hs.image.imageFromURL(uri)
 end
 
-function spotifyPlaying()
+local function spotifyPlaying()
     if not hs.spotify.isRunning() then
         hs.alert.show("Spotify isn't running")
         return

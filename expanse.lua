@@ -1,8 +1,8 @@
-MAX_LENGTH = 100
+local MAX_LENGTH = 100
 
 local function call_expanse(args)
     local command = os.getenv("HOME") .. "/bin/expanse " .. table.concat(args, " ")
-    output, status = hs.execute(command)
+    local output, status = hs.execute(command)
     if not status then
         hs.alert.show("Error running expanse: " .. output)
     end
@@ -34,8 +34,8 @@ local function get_expanses()
     return choices
 end
 
-function pick_expanse()
-    chooser = hs.chooser.new(callback)
+local function pick_expanse()
+    local chooser = hs.chooser.new(callback)
     chooser:searchSubText(true)
     chooser:choices(get_expanses())
     chooser:show()
