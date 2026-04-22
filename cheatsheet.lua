@@ -30,6 +30,7 @@ function M.toggle()
         h1 { color: #cba6f7; font-size: 20px; margin-bottom: 12px; column-span: all; }
         #content { columns: 2; column-gap: 28px; }
         h2 { color: #89b4fa; font-size: 13px; text-transform: uppercase; margin: 8px 0 4px; break-after: avoid; }
+        h3 { color: #94e2d5; font-size: 11px; text-transform: uppercase; margin: 6px 0 3px; break-after: avoid; font-weight: 600; }
         table { width: 100%; border-collapse: collapse; margin-bottom: 6px; break-inside: avoid; }
         th { color: #6c7086; font-size: 10px; text-transform: uppercase; text-align: left; }
         td, th { padding: 2px 8px; border-bottom: 1px solid #313244; font-size: 12px; } tr:hover { background: #252536; }
