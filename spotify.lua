@@ -20,12 +20,22 @@ local function albumart()
 end
 
 function spotifyPlaying()
-    local album = hs.spotify.getCurrentAlbum()
-    local artist = hs.spotify.getCurrentArtist()
+    if not hs.spotify.isRunning() then
+        hs.alert.show("Spotify isn't running")
+        return
+    end
+
     local track = hs.spotify.getCurrentTrack()
+    if not track then
+        hs.alert.show("No track loaded")
+        return
+    end
+
+    local artist = hs.spotify.getCurrentArtist() or "Unknown Artist"
+    local album = hs.spotify.getCurrentAlbum() or "Unknown Album"
     local message = artist .. " - " .. track .. " [" .. album .. "]"
 
-    if hs.spotify.isPlaying() ~= true then
+    if not hs.spotify.isPlaying() then
         message = message .. "\nPaused"
     end
 
