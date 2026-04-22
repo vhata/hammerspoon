@@ -20,6 +20,7 @@ function M.toggle()
 
     local jsPath = os.getenv("HOME") .. "/.hammerspoon/marked.min.js"
     local jf = io.open(jsPath, "r")
+    if not jf then hs.alert.show("marked.min.js not found"); return end
     local markedJs = jf:read("*a")
     jf:close()
 
