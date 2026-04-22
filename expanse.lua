@@ -1,5 +1,3 @@
-local logger = hs.logger.new("expanse", 'info')
-
 MAX_LENGTH = 100
 
 local function call_expanse(args)
