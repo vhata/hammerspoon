@@ -2,12 +2,12 @@ local hyper = { "cmd", "alt", "ctrl"}
 
 local applicationHotkeys = {
     c = 'Google Chrome',
-    s = 'Spotify',
+    -- s = 'Spotify',
     v = 'Vivaldi',
     o = 'Obsidian',
     d = 'Discord',
-    w = 'Discord Canary',
-    g = 'Signal',
+    -- w = 'Discord Canary',
+    -- g = 'Signal',
   }
   for key, app in pairs(applicationHotkeys) do
     hs.hotkey.bind(hyper, key, function()
