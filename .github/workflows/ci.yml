@@ -4,6 +4,8 @@ name: CI
 
 on:
   pull_request:
+    # edited: re-validate PR markers when the description changes.
+    types: [opened, synchronize, reopened, edited]
   push:
     branches: [main]
 

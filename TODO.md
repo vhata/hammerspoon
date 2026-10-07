@@ -49,7 +49,7 @@ Ordinary follow-ups and bugs found during other work live here. Whole-codebase r
 
 - [SPOONS] `floatcalendar-sunday-start` — **Show the 1st of the month when it falls on a Sunday.** The grid header is Monday-first but `Spoons/FloatCalendar.spoon/init.lua:73` offsets by Lua's Sunday-first `wday`, so Feb, Mar and Nov 2026 all start their first row on the 2nd and drop the 1st.
   - Source: config review in a Claude Code session, 2026-10-07
-  - Starting point: use `(wday + 5) % 7 + 1` as the Monday-based weekday in the offset; the same offset drives the today highlight and the week-number column.
+  - Starting point: let `mwday = (wday + 5) % 7 + 1` (Monday 1, Sunday 7) and compute `caltable_idx - mwday + 1`; the existing `+ 2` constant must become `+ 1` or every month shifts. The same offset positions the today highlight. Six rows are then enough (a 31-day month starting Sunday ends at cell 37).
   - Related: `floatcalendar-seventh-row`, `floatcalendar-iso-weeks`
 - [CONFIG] `leader-false-trigger-while-typing` — **Stop the leader modal firing when right Shift is used twice in quick succession while typing.** The event tap in `leader.lua:39` only sees `flagsChanged`, so Shift+I, release, Shift+A within half a second counts as a double-tap.
   - Source: config review in a Claude Code session, 2026-10-07
@@ -71,13 +71,20 @@ Ordinary follow-ups and bugs found during other work live here. Whole-codebase r
 - [CONFIG] `hyper-embiggen-blocking` — **Run `embiggen` without blocking Hammerspoon.** `hyper.lua:16` runs it through a login shell with `hs.execute(..., true)`, which blocks every hotkey while the shell profile loads and may run before the app's window exists.
   - Source: config review in a Claude Code session, 2026-10-07
   - Starting point: `hs.task` with the resolved path to `embiggen`; consider a short delay or an application watcher for apps that are still launching.
-- [MODULES] `cheatsheet-json-encode` — **Escape the cheatsheet markdown with `hs.json.encode`.** `cheatsheet.lua:41` hand-escapes into a JS string literal, so a `</script>` or unusual line separator in the markdown breaks the page.
+- [MODULES] `cheatsheet-json-encode` — **Escape the cheatsheet markdown with `hs.json.encode`.** `cheatsheet.lua:41` hand-escapes into a JS string literal inside a `<script>` block, so a `</script>` in the markdown ends the script early and breaks the page.
+  - Starting point: `hs.json.encode` takes a table, so encode `{md}` and read element `[0]` in the page; also escape `</` as `<\/` in the encoded output.
   - Source: config review in a Claude Code session, 2026-10-07
 - [MODULES] `spotify-async-artwork` — **Fetch Spotify album art without blocking.** `hs.image.imageFromURL` in `spotify.lua:19` is a synchronous network fetch, so a slow connection briefly freezes Hammerspoon.
   - Source: config review in a Claude Code session, 2026-10-07
-  - Starting point: fetch with `hs.http.asyncGet` and send the notification from its callback, falling back to no image on failure.
+  - Starting point: `hs.image.imageFromURL(url, callbackFn)` is asynchronous when given a callback; send the notification from the callback, or without an image when the URL is nil.
 - [CONFIG] `remove-dead-code` — **Remove unused code and variables.** `spoon.AClock:init()` in `init.lua:11` repeats what `hs.loadSpoon` already does; the `expanse`, `spotify` and `hyper` locals in `init.lua` are never read; `j, st, t, rc` in `hyper.lua:16`, `notification` in `spotify.lua:42` and `logger` in FloatCalendar are unused; `Spoons/Calendar.spoon` is tracked but never loaded.
   - Source: config review in a Claude Code session, 2026-10-07
   - Related: `adopt-luacheck`
+- [SPOONS] `floatcalendar-global-hotkeys` — **Stop the open FloatCalendar from swallowing R, the arrow keys and Escape in other apps.** `Spoons/FloatCalendar.spoon/init.lua:263-275` binds them as global hotkeys while the calendar is shown, so typing `r` anywhere resets the calendar instead of reaching the focused app.
+  - Source: independent review of PR #1, 2026-10-07
+  - Starting point: an `hs.hotkey.modal` entered on show, or hide the calendar on any unbound key; decide whether the calendar should take focus.
+- [CONFIG] `reload-watcher-filter` — **Reload only when config files change, not on writes under `.git/` or worktree directories.** `ReloadConfiguration` reloads on any change under `~/.hammerspoon`, including every git operation, which is why worktrees have to live outside the repository.
+  - Source: independent review of PR #1, 2026-10-07
+  - Starting point: the pathwatcher callback receives the changed paths; filter to `.lua` files outside `.git/`, either in `init.lua` via `watch_paths` replacement or a small wrapper instead of the vendored spoon.
 - [TOOLING] `gitignore-macos` — **Replace the generic C `.gitignore` with one for this repository.** The current file lists compiled-object patterns that never occur here and misses `.DS_Store`.
   - Source: config review in a Claude Code session, 2026-10-07

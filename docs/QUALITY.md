@@ -21,7 +21,7 @@ Each check is a standalone script, runnable from any directory, exiting non-zero
 | `scripts/workflow/check-links.sh` | relative Markdown links | | yes | yes |
 | `scripts/check.sh` | lint, queues, links, in order | | | |
 
-The hook lives in `.githooks/pre-commit` and is installed by `bash scripts/setup.sh` (`core.hooksPath`). It checks only and never rewrites files; it takes well under a second. Bypassing it is for a broken toolchain only; state the bypass and the equivalent checks in the PR.
+The hook lives in `.githooks/pre-commit` and is installed by `bash scripts/setup.sh` (`core.hooksPath`). It checks the working tree rather than the staged content, so a partially staged file is linted as it is on disk. It checks only and never rewrites files, and takes well under a second. Bypassing it is for a broken toolchain only; state the bypass and the equivalent checks in the PR.
 
 Toolchain: CI installs Ubuntu's `lua5.4`, matching the Lua version Hammerspoon embeds. Locally `scripts/lint.sh` prefers `luac5.4` and falls back to whatever `luac` is installed (Homebrew currently ships 5.5), so a local pass on a newer Lua is not proof of a 5.4 pass; CI is.
 
