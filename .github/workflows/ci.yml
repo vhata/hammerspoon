@@ -1,0 +1,52 @@
+# Merge-blocking checks. Every job calls the scripts in scripts/, so
+# `bash scripts/check.sh` reproduces the check job locally. See docs/QUALITY.md.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+defaults:
+  run:
+    shell: bash   # explicit bash gives `-eo pipefail`
+
+concurrency:
+  group: ci-${{ github.ref }}
+  # Cancel superseded runs on PR branches only. Cancelling runs on main hides
+  # red builds when several PRs merge in quick succession.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq lua5.4
+      - run: bash scripts/lint.sh
+
+  workflow:
+    name: Queue and PR hygiene
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: bash scripts/workflow/check-queues.sh --strict
+      - run: bash scripts/workflow/check-links.sh
+      - name: Validate PR markers against the queues
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          BASE: ${{ github.event.pull_request.base.ref }}
+          HEAD_BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: |
+          gh pr view "$PR" --json body -q .body > /tmp/pr-body.md
+          bash scripts/workflow/check-pr-markers.sh --body /tmp/pr-body.md --base "origin/$BASE" --head HEAD --branch "$HEAD_BRANCH"
