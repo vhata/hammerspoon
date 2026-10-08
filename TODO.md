@@ -15,12 +15,19 @@ Ordinary follow-ups and bugs found during other work live here. Whole-codebase r
 ### Unprioritized
 
 - [MODULES] `expanse-multiline-dump` — **Parse `expanse dump` output correctly when an expansion spans several lines.** The `gmatch` in `expanse.lua:35` assumes each expansion is exactly one line, so a multi-line snippet desynchronises every short/expansion pair after it.
+  - `dump` in `~/src/expanse/expanse/cli.py:123` already replaces newlines in expansions with `↵`, so multi-line expansions may parse fine today; a short name containing a newline would still desynchronise. Confirm before fixing (independent review of PR #5, 2026-10-08).
   - Source: config review in a Claude Code session, 2026-10-07
   - Starting point: check what `~/bin/expanse dump` emits for a multi-line expansion; the fix depends on whether the format is delimited at all, which may need a change to `expanse` itself.
 - [TOOLING] `adopt-luacheck` — **Add luacheck to the lint gate with a `.luacheckrc` that knows the `hs` and `spoon` globals.** `luac -p` only proves files parse; luacheck would catch accidental globals and unused locals, both of which have already been fixed by hand in this repository's history.
   - Source: config review in a Claude Code session, 2026-10-07
   - Starting point: decide whether vendored spoons are excluded (AClock defines a global `getframe`), then clear the remaining warnings or record them as baseline; install via `luarocks` or apt `lua-check` in CI.
   - Related: `remove-dead-code`
+- [MODULES] `spotify-artwork-timeout` — **Send the now-playing notification without art if the artwork fetch is slow.** Since the fetch became asynchronous, the notification waits for it, which on a slow or dead link can be as long as the system URL timeout.
+  - Source: fixing `spotify-async-artwork`, PR #4, 2026-10-08
+  - Starting point: an `hs.timer.doAfter` of a few seconds that sends without art, with the image callback sending only if the timer has not fired; decide whether a late image should replace the notification.
+- [CONFIG] `hyper-embiggen-reopen` — **Resize the right window when an app has no usable window yet.** Two related cases: `hyper.lua` runs `embiggen` at once for a running app, so an app with every window closed (Chrome) gets `embiggen` before macOS reopens a window; and on a cold Discord launch the cold-launch wait may see the update splash as the first window.
+  - Source: fixing `hyper-embiggen-blocking`, PR #10, 2026-10-08
+  - Starting point: treat a running app with no windows like a cold launch, but `mainWindow()` only sees the current Space while yabai sees all of them, so the check has to use yabai or `hs.window.filter` across Spaces.
 
 ## Needs proof of concept
 
@@ -47,6 +54,7 @@ Ordinary follow-ups and bugs found during other work live here. Whole-codebase r
 ### Unprioritized
 
 - [CONFIG] `remove-dead-code` — **Remove unused code and variables.** `spoon.AClock:init()` in `init.lua:11` repeats what `hs.loadSpoon` already does; the `expanse`, `spotify` and `hyper` locals in `init.lua` are never read; `logger` in FloatCalendar is unused; `Spoons/Calendar.spoon` is tracked but never loaded.
+  - `local bindings = {}` in `leader.lua:4` is also never used (found while fixing `leader-false-trigger-while-typing`, PR #3, 2026-10-08).
   - Source: config review in a Claude Code session, 2026-10-07
   - Related: `adopt-luacheck`
 - [SPOONS] `floatcalendar-global-hotkeys` — **Stop the open FloatCalendar from swallowing R, the arrow keys and Escape in other apps.** `obj:show()` in `Spoons/FloatCalendar.spoon/init.lua` binds them as global hotkeys while the calendar is shown, so typing `r` anywhere resets the calendar instead of reaching the focused app.
@@ -57,3 +65,17 @@ Ordinary follow-ups and bugs found during other work live here. Whole-codebase r
   - Starting point: the pathwatcher callback receives the changed paths; filter to `.lua` files outside `.git/`, either in `init.lua` via `watch_paths` replacement or a small wrapper instead of the vendored spoon.
 - [TOOLING] `gitignore-macos` — **Replace the generic C `.gitignore` with one for this repository.** The current file lists compiled-object patterns that never occur here and misses `.DS_Store`.
   - Source: config review in a Claude Code session, 2026-10-07
+- [MODULES] `expanse-get-trailing-newline` — **Strip the trailing newline from the expansion before it goes to the clipboard.** `expanse get` prints with Python's `print()`, so every pasted expansion ends with an extra `\n`.
+  - Source: fixing `expanse-shell-quoting`, PR #5, 2026-10-08
+  - Starting point: strip one trailing `\r?\n` in `callback` in `expanse.lua`; expansions that end in a deliberate newline would need `expanse` itself to change.
+- [MODULES] `expanse-error-feedback` — **Tell the user when the expansion picker gets nothing back, instead of silently emptying the clipboard.** An unknown name makes `expanse get` print nothing and exit 0, so `setContents("")` clears the clipboard with no alert; on a real failure the alert shows only stdout, which is empty because stderr is not captured.
+  - Source: fixing `expanse-shell-quoting`, PR #5, 2026-10-08
+  - Starting point: in `expanse.lua`, skip `setContents` and alert on empty output; append `2>&1` (or switch to `hs.task`) so the failure alert carries the error text.
+- [SPOONS] `floatcalendar-title-offset` — **Position the FloatCalendar title using the canvas height.** The title's `frame.y` in `obj:init()` divides by `self.calw` where `self.calh` is meant, so the title sits about 3 px off.
+  - Source: fixing `floatcalendar-seventh-row`, PR #7, 2026-10-08
+- [SPOONS] `floatcalendar-midnight-refresh` — **Move the today highlight when the date changes while the calendar is open.** `updateCalCanvas` reads the date only on redraw, so a calendar left open past midnight highlights yesterday until the user navigates or presses R.
+  - Source: fixing `floatcalendar-seventh-row`, PR #7, 2026-10-08
+  - Starting point: a timer started in `show()` and stopped in `hide()` that redraws at the next midnight. `self.year` and `self.month` are set only in `init()` and `resetDate()`, so a redraw across a month boundary keeps showing the old month; reset them unless the user has navigated away.
+  - The same staleness affects a calendar closed and reopened after the month changes: `show()` does not reset the viewed month, so it reopens on the month that was current at load time.
+- [CONFIG] `hyper-app-name-mangling` — **Build the `embiggen` window name the same way `yabai.sh` does.** `~/bin/yabai.sh` strips U+200E (left-to-right mark) and replaces `.` and `-` as well as spaces with `_` in app names, but `hyper.lua` only replaces spaces; no bound app has those characters today, so this is latent.
+  - Source: fixing `hyper-embiggen-blocking`, PR #10, 2026-10-08
