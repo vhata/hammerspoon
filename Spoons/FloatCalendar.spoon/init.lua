@@ -67,7 +67,7 @@ function obj:updateCalCanvas()
         day = 1
     }).wday
 
-    for i = 1, 7 do
+    for i = 1, 6 do
         for k = 1, 7 do
             local caltable_idx = 7 * (i - 1) + k
             local pushbacked_value = caltable_idx - weekday_of_firstday + 2
