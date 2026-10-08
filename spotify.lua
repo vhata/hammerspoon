@@ -11,12 +11,17 @@ local function tell(cmd)
     end
 end
 
-local function albumart()
+-- Fetch the current track's album art in the background, then call fn with
+-- an hs.image, or with nil if there is no art or the fetch fails.
+local function albumart(fn)
     local uri = tell('artwork url of current track')
-    if uri == nil then
-        return nil
+    -- imageFromURL never calls back for a URL it cannot parse, so check with
+    -- the same parser (NSURL) first.
+    if type(uri) ~= "string" or uri == "" or hs.http.urlParts(uri).absoluteString == nil then
+        fn(nil)
+        return
     end
-    return hs.image.imageFromURL(uri)
+    hs.image.imageFromURL(uri, fn)
 end
 
 local function spotifyPlaying()
@@ -39,11 +44,13 @@ local function spotifyPlaying()
         message = message .. "\nPaused"
     end
 
-    local notification = hs.notify.new({
-        title = "Now Playing",
-        informativeText = message,
-        contentImage = albumart()
-    }):send()
+    albumart(function(image)
+        hs.notify.new({
+            title = "Now Playing",
+            informativeText = message,
+            contentImage = image
+        }):send()
+    end)
 end
 
 hs.hotkey.bind({}, "f14", spotifyPlaying)
