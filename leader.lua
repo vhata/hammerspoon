@@ -58,10 +58,18 @@ local function showHelp()
     deactivate()
     help.toggle(tree, builtins, triggerText())
 end
-builtins = {
+builtins = {}
+for _, b in ipairs({
     { mods = {"shift"}, key = "/", display = "?", label = "Show this help", fn = showHelp },
     { mods = {}, key = "escape", display = "esc", label = "Close the leader", fn = deactivate },
-}
+}) do
+    -- hs.hotkey raises on a key the current layout lacks, which would fail the reload.
+    if hs.keycodes.map[b.key] then
+        builtins[#builtins + 1] = b
+    else
+        print("leader: no " .. b.key .. " key on this keyboard layout; " .. b.display .. " is unavailable")
+    end
+end
 
 -- Keys taken by builtins, which tree items cannot use: unmodified builtin
 -- keys, and every builtin's display name so the help never shows one twice.
@@ -78,9 +86,9 @@ local function problem(item, seen)
     if reserved[item.key] then return "reserved key" end
     if seen[item.key] then return "duplicate key" end
     if type(item.label) ~= "string" then return "missing label" end
-    if (type(item.fn) == "function") == (type(item.items) == "table") then
-        return "needs exactly one of fn or items"
-    end
+    if (item.fn == nil) == (item.items == nil) then return "needs exactly one of fn or items" end
+    if item.fn ~= nil and type(item.fn) ~= "function" then return "fn is not a function" end
+    if item.items ~= nil and type(item.items) ~= "table" then return "items is not a table" end
 end
 
 -- Build a modal for one group's items. Returns the modal and the items that
