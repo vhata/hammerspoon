@@ -5,7 +5,7 @@ What the configuration is now and the invariants reviews check.
 ## Layout
 
 - `init.lua`: entry point. Loads the spoons and modules, binds the leader keys, starts the reload watcher.
-- `hyper.lua`: Cmd+Alt+Ctrl+<key> launches or focuses an app, then runs the external `embiggen` command on it in the background (after its first window appears, if the app was not running).
+- `hyper.lua`: Cmd+Alt+Ctrl+<key> launches or focuses an app using Hammerspoon's application API.
 - `leader.lua`: double-tap right Ctrl or right Shift opens a one-second modal; `leader.bind(key, fn)` registers actions. This is the shared interface the other modules hang off.
 - `cheatsheet.lua`: renders `~/.config/nvim/CHEATSHEET.md` in a webview overlay using the vendored `marked.min.js`.
 - `expanse.lua`: Cmd+Alt+E chooser over the external `~/bin/expanse` text-expansion tool; the chosen expansion goes to the clipboard.
@@ -16,7 +16,7 @@ What the configuration is now and the invariants reviews check.
 ## Shared interfaces
 
 - `leader.bind(key, fn)` and the leader trigger keys (right Ctrl keycode 62, right Shift keycode 60).
-- External commands the config shells out to: `embiggen` (on the login-shell `PATH`; `hyper.lua` runs it as an `hs.task`, resolving its path and that `PATH` once per reload because the script calls `yabai` and `jq` by name), `~/bin/expanse` (`dump` and `get -- <short>`). Neither lives in this repository.
+- External command the config shells out to: `~/bin/expanse` (`dump` and `get -- <short>`). It lives outside this repository.
 - `~/.config/nvim/CHEATSHEET.md`, owned by the user's Neovim config.
 
 ## Invariants
