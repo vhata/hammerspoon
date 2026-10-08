@@ -63,7 +63,7 @@ local function render(tree, builtins, trigger)
         li.group { color: #94e2d5; }
         li.group li { color: #cdd6f4; }
         kbd { display: inline-block; min-width: 14px; text-align: center; background: #313244; color: #f38ba8; padding: 1px 5px; border-radius: 4px; font-family: "SF Mono", Menlo, monospace; font-size: 11px; margin-right: 6px; }
-        h2 kbd { font-size: 12px; }
+        h2 kbd { font-size: 12px; text-transform: none; }
     </style></head><body>
     <h1>Leader</h1>
     <p>]] .. esc(trigger) .. [[, then press the keys below.</p>
