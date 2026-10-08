@@ -4,9 +4,9 @@ What the configuration is now and the invariants reviews check.
 
 ## Layout
 
-- `init.lua`: entry point. Loads the spoons and modules, binds the leader keys, starts the reload watcher.
+- `init.lua`: entry point. Loads the spoons and modules, declares the leader tree, starts the reload watcher.
 - `hyper.lua`: Cmd+Alt+Ctrl+<key> launches or focuses an app using Hammerspoon's application API.
-- `leader.lua`: double-tap right Ctrl or right Shift opens a one-second modal; `leader.bind(key, fn)` registers actions. This is the shared interface the other modules hang off.
+- `leader.lua`: double-tap right Ctrl or right Shift opens the leader. `leader.setup(tree)` takes the whole key tree as one table of actions and nested groups, builds one `hs.hotkey.modal` per group, and gives each layer one second to receive a key. This is the shared interface the other modules hang off.
 - `cheatsheet.lua`: renders `~/.config/nvim/CHEATSHEET.md` in a webview overlay using the vendored `marked.min.js`.
 - `expanse.lua`: Cmd+Alt+E chooser over the external `~/bin/expanse` text-expansion tool; the chosen expansion goes to the clipboard.
 - `spotify.lua`: F14 or keypad `/` shows a now-playing notification with album art.
@@ -15,7 +15,7 @@ What the configuration is now and the invariants reviews check.
 
 ## Shared interfaces
 
-- `leader.bind(key, fn)` and the leader trigger keys (right Ctrl keycode 62, right Shift keycode 60).
+- `leader.setup(tree)` and its item format (`key`, `label`, and `fn` or `items`), and the leader trigger keys (right Ctrl keycode 62, right Shift keycode 60).
 - External command the config shells out to: `~/bin/expanse` (`dump` and `get -- <short>`). It lives outside this repository.
 - `~/.config/nvim/CHEATSHEET.md`, owned by the user's Neovim config.
 

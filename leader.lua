@@ -1,12 +1,22 @@
--- Double-tap right Ctrl (external keyboard) or right Shift (laptop),
--- then press a key to trigger an action.
+-- Double-tap right Ctrl (external keyboard) or right Shift (laptop), then
+-- press keys to walk the tree passed to M.setup. Each group in the tree is
+-- its own hs.hotkey.modal: pressing a group's key swaps to that group's
+-- modal and restarts the timeout; pressing an action's key closes the
+-- leader and runs the action. Escape closes it from any layer.
 local M = {}
-local bindings = {}
-local modal = hs.hotkey.modal.new()
+
+-- How long each layer waits for a key, in seconds.
+local TIMEOUT = 1
+
+-- Every modal built by M.setup, held so the garbage collector cannot stop it.
+local modals = {}
+local root = nil
+local active = nil
+local timer = nil
+
 local lastRelease = 0
 local lastKey = nil
 local pressedKey = nil
-local timeout = nil
 
 -- keycode -> { flag name, alert symbol }
 local triggers = {
@@ -15,27 +25,72 @@ local triggers = {
 }
 local alertSymbol = "⇧⇧"
 
+-- Keys the leader binds in every layer itself.
+local reserved = { escape = true }
+
 local function deactivate()
-    modal:exit()
-    if timeout then timeout:stop(); timeout = nil end
+    if active then active:exit(); active = nil end
+    if timer then timer:stop(); timer = nil end
     hs.alert.closeAll()
 end
 
-function modal:entered()
-    hs.alert.show(alertSymbol, 0.5)
-    timeout = hs.timer.doAfter(1, deactivate)
+local function activate(modal, crumb)
+    deactivate()
+    active = modal
+    modal:enter()
+    hs.alert.show(crumb == "" and alertSymbol or (alertSymbol .. "  " .. crumb), TIMEOUT)
+    timer = hs.timer.doAfter(TIMEOUT, deactivate)
 end
 
-function modal:exited() end
-
-function M.bind(key, fn)
-    modal:bind({}, key, function()
-        deactivate()
-        fn()
-    end)
+-- Why an item cannot be bound, or nil if it can.
+local function problem(item, seen)
+    if type(item) ~= "table" then return "not a table" end
+    if type(item.key) ~= "string" or not hs.keycodes.map[item.key] then return "unknown key" end
+    if reserved[item.key] then return "reserved key" end
+    if seen[item.key] then return "duplicate key" end
+    if type(item.label) ~= "string" then return "missing label" end
+    if (type(item.fn) == "function") == (type(item.items) == "table") then
+        return "needs exactly one of fn or items"
+    end
 end
 
-modal:bind({}, "escape", deactivate)
+-- Build a modal for one group's items. Returns the modal and the items that
+-- were bound, so anything rendered from the tree matches what the keys do.
+local function build(items, crumb)
+    local modal = hs.hotkey.modal.new()
+    modals[#modals + 1] = modal
+    modal:bind({}, "escape", deactivate)
+    local bound, seen = {}, {}
+    for _, item in ipairs(items) do
+        local why = problem(item, seen)
+        if why then
+            print("leader: skipping " .. crumb .. " " .. tostring(type(item) == "table" and item.key) .. ": " .. why)
+        elseif item.items then
+            local childCrumb = crumb == "" and item.label or (crumb .. " › " .. item.label)
+            local child, childItems = build(item.items, childCrumb)
+            modal:bind({}, item.key, function() activate(child, childCrumb) end)
+            seen[item.key] = true
+            bound[#bound + 1] = { key = item.key, label = item.label, items = childItems }
+        else
+            local fn = item.fn
+            modal:bind({}, item.key, function()
+                deactivate()
+                fn()
+            end)
+            seen[item.key] = true
+            bound[#bound + 1] = { key = item.key, label = item.label, fn = fn }
+        end
+    end
+    return modal, bound
+end
+
+-- Bind the leader tree. Each item is a table with a key (an hs.keycodes.map
+-- name), a label, and either fn (an action) or items (a group of further
+-- items). Call once; invalid items are skipped with a console message rather
+-- than failing the reload.
+function M.setup(tree)
+    root = build(tree, "")
+end
 
 local keyDown = hs.eventtap.event.types.keyDown
 
@@ -59,7 +114,7 @@ M.tap = hs.eventtap.new({hs.eventtap.event.types.flagsChanged, keyDown}, functio
         lastRelease = 0
         lastKey = nil
         alertSymbol = trigger.symbol
-        modal:enter()
+        if root then activate(root, "") end
     else
         lastRelease = now
         lastKey = kc
