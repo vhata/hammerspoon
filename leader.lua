@@ -2,7 +2,10 @@
 -- press keys to walk the tree passed to M.setup. Each group in the tree is
 -- its own hs.hotkey.modal: pressing a group's key swaps to that group's
 -- modal and restarts the timeout; pressing an action's key closes the
--- leader and runs the action. Escape closes it from any layer.
+-- leader and runs the action. Escape closes it and "?" shows the whole tree
+-- from any layer.
+local help = require("leaderhelp")
+
 local M = {}
 
 -- How long each layer waits for a key, in seconds.
@@ -11,6 +14,8 @@ local TIMEOUT = 1
 -- Every modal built by M.setup, held so the garbage collector cannot stop it.
 local modals = {}
 local root = nil
+-- The items M.setup actually bound, for the help overlay.
+local tree = {}
 local active = nil
 local timer = nil
 
@@ -18,15 +23,19 @@ local lastRelease = 0
 local lastKey = nil
 local pressedKey = nil
 
--- keycode -> { flag name, alert symbol }
+-- keycode -> { flag name, alert symbol, name in the help }
 local triggers = {
-    [62] = { flag = "ctrl",  symbol = "⌃⌃" },
-    [60] = { flag = "shift", symbol = "⇧⇧" },
+    [62] = { flag = "ctrl",  symbol = "⌃⌃", name = "right Ctrl" },
+    [60] = { flag = "shift", symbol = "⇧⇧", name = "right Shift" },
 }
 local alertSymbol = "⇧⇧"
 
--- Keys the leader binds in every layer itself.
-local reserved = { escape = true }
+local function triggerText()
+    local names = {}
+    for _, t in pairs(triggers) do names[#names + 1] = t.name end
+    table.sort(names)
+    return "Double-tap " .. table.concat(names, " or ")
+end
 
 local function deactivate()
     if active then active:exit(); active = nil end
@@ -40,6 +49,24 @@ local function activate(modal, crumb)
     modal:enter()
     hs.alert.show(crumb == "" and alertSymbol or (alertSymbol .. "  " .. crumb), TIMEOUT)
     timer = hs.timer.doAfter(TIMEOUT, deactivate)
+end
+
+-- Keys the leader binds in every layer itself. display and label are for
+-- the help overlay.
+local builtins
+local function showHelp()
+    deactivate()
+    help.toggle(tree, builtins, triggerText())
+end
+builtins = {
+    { mods = {"shift"}, key = "/", display = "?", label = "Show this help", fn = showHelp },
+    { mods = {}, key = "escape", display = "esc", label = "Close the leader", fn = deactivate },
+}
+
+-- Unmodified keys taken by builtins, which tree items cannot use.
+local reserved = {}
+for _, b in ipairs(builtins) do
+    if #b.mods == 0 then reserved[b.key] = true end
 end
 
 -- Why an item cannot be bound, or nil if it can.
@@ -59,7 +86,7 @@ end
 local function build(items, crumb)
     local modal = hs.hotkey.modal.new()
     modals[#modals + 1] = modal
-    modal:bind({}, "escape", deactivate)
+    for _, b in ipairs(builtins) do modal:bind(b.mods, b.key, b.fn) end
     local bound, seen = {}, {}
     for _, item in ipairs(items) do
         local why = problem(item, seen)
@@ -88,8 +115,8 @@ end
 -- name), a label, and either fn (an action) or items (a group of further
 -- items). Call once; invalid items are skipped with a console message rather
 -- than failing the reload.
-function M.setup(tree)
-    root = build(tree, "")
+function M.setup(items)
+    root, tree = build(items, "")
 end
 
 local keyDown = hs.eventtap.event.types.keyDown

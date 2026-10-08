@@ -17,7 +17,7 @@ Work required for the requested outcome, its correctness or its verification sta
   - Related: `other-slug` (optional)
 ```
 
-`Source` is required. Slugs are unique across both queues and never change when an entry moves. One area per entry, from: `[CONFIG]` (`init.lua`, `hyper.lua`, `leader.lua`), `[MODULES]` (`cheatsheet.lua`, `expanse.lua`, `overlay.lua`, `spotify.lua`), `[SPOONS]`, `[TOOLING]`, `[DOCS]`. Add free-form indented lines for evidence. Search both queues before adding; update an existing entry instead of duplicating it.
+`Source` is required. Slugs are unique across both queues and never change when an entry moves. One area per entry, from: `[CONFIG]` (`init.lua`, `hyper.lua`, `leader.lua`, `leaderhelp.lua`), `[MODULES]` (`cheatsheet.lua`, `expanse.lua`, `overlay.lua`, `spotify.lua`), `[SPOONS]`, `[TOOLING]`, `[DOCS]`. Add free-form indented lines for evidence. Search both queues before adding; update an existing entry instead of duplicating it.
 
 Review backlog entries additionally carry `Findings: <finding-slug>, ...` naming every raw review finding they cover, and `Source` names the review file. Each finding maps to at most one backlog entry.
 
