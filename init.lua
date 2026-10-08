@@ -10,6 +10,10 @@ local leader = require("leader")
 
 spoon.AClock:init()
 
+local function app(key, name)
+    return { key = key, label = name, fn = function() hs.application.launchOrFocus(name) end }
+end
+
 -- The leader tree: double-tap right Ctrl or right Shift, then press keys.
 -- See leader.setup for the item format.
 leader.setup({
@@ -21,6 +25,15 @@ leader.setup({
             if c:isVisible() then c:hide() else c:show() end
         end },
         { key = "v", label = "Neovim cheatsheet", fn = function() cheatsheet.toggle() end },
+    } },
+    { key = "a", label = "Apps", items = {
+        app("c", "Google Chrome"),
+        -- app("s", "Spotify"),
+        app("v", "Vivaldi"),
+        app("o", "Obsidian"),
+        app("d", "Discord"),
+        -- app("w", "Discord Canary"),
+        -- app("g", "Signal"),
     } },
 })
 

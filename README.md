@@ -7,6 +7,7 @@ For use with [Hammerspoon](https://www.hammerspoon.org/). Clone to `~/.hammerspo
 | Keys | Action |
 | --- | --- |
 | Cmd+Alt+Ctrl+C / V / O / D | Focus or launch Chrome / Vivaldi / Obsidian / Discord |
+| Double-tap, then A, C / V / O / D | The same, through the leader |
 | Double-tap right Ctrl or right Shift, then ? | Overlay listing every leader key, generated from the tree in `init.lua` |
 | Double-tap, then O, C | Toggle the floating clock |
 | Double-tap, then O, L | Toggle the floating calendar (arrows change month and year, R resets, Esc closes) |
