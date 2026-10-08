@@ -7,7 +7,8 @@ What the configuration is now and the invariants reviews check.
 - `init.lua`: entry point. Loads the spoons and modules, declares the leader tree, starts the reload watcher.
 - `hyper.lua`: Cmd+Alt+Ctrl+<key> launches or focuses an app using Hammerspoon's application API.
 - `leader.lua`: double-tap right Ctrl or right Shift opens the leader. `leader.setup(tree)` takes the whole key tree as one table of actions and nested groups, builds one `hs.hotkey.modal` per group, and gives each layer one second to receive a key. This is the shared interface the other modules hang off.
-- `cheatsheet.lua`: renders `~/.config/nvim/CHEATSHEET.md` in a webview overlay using the vendored `marked.min.js`.
+- `overlay.lua`: a centred borderless webview that Escape dismisses; `overlay.new()` returns one with its own `toggle(build)`.
+- `cheatsheet.lua`: renders `~/.config/nvim/CHEATSHEET.md` in an `overlay.lua` webview using the vendored `marked.min.js`.
 - `expanse.lua`: Cmd+Alt+E chooser over the external `~/bin/expanse` text-expansion tool; the chosen expansion goes to the clipboard.
 - `spotify.lua`: F14 or keypad `/` shows a now-playing notification with album art.
 - `Spoons/FloatCalendar.spoon`: the user's own month calendar overlay.
