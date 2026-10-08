@@ -46,9 +46,6 @@ Ordinary follow-ups and bugs found during other work live here. Whole-codebase r
 
 ### Unprioritized
 
-- [SPOONS] `floatcalendar-iso-weeks` — **Show ISO 8601 week numbers in FloatCalendar without shelling out.** `%W` gives week 00 for 1 Jan 2026 where ISO `%V` gives 01, so numbers are off by one in years starting Tuesday to Thursday, and `init.lua:96` runs `date` through `hs.execute` on every redraw.
-  - Source: config review in a Claude Code session, 2026-10-07
-  - Starting point: compute each row's week from the Monday that starts it with `os.date("%V", ...)`; rows can cross a year boundary, so do not just add the row index.
 - [CONFIG] `hyper-embiggen-blocking` — **Run `embiggen` without blocking Hammerspoon.** `hyper.lua:16` runs it through a login shell with `hs.execute(..., true)`, which blocks every hotkey while the shell profile loads and may run before the app's window exists.
   - Source: config review in a Claude Code session, 2026-10-07
   - Starting point: `hs.task` with the resolved path to `embiggen`; consider a short delay or an application watcher for apps that are still launching.

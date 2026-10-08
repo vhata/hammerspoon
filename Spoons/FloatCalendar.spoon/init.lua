@@ -94,10 +94,17 @@ function obj:updateCalCanvas()
             end
         end
     end
-    -- update yearweek
-    local yearweek_of_firstday = hs.execute(string.format("date -j %02d010001%04d +'%%W'", self.month, self.year))
+    -- update yearweek: ISO 8601 week of the Monday that starts each row.
+    -- os.time normalises out-of-range days, and noon keeps DST from
+    -- shifting the date.
     for i = 1, 6 do
-        local yearweek_rowvalue = math.tointeger(yearweek_of_firstday) + i - 1
+        local monday_of_row = os.time {
+            year = self.year,
+            month = self.month,
+            day = 1 - (mweekday_of_firstday - 1) + 7 * (i - 1),
+            hour = 12
+        }
+        local yearweek_rowvalue = tonumber(os.date("%V", monday_of_row))
         self.canvas[51 + i].text = yearweek_rowvalue
         self.canvas[51 + i].textColor = weeknumcolor
     end
