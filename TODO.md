@@ -14,10 +14,9 @@ Ordinary follow-ups and bugs found during other work live here. Whole-codebase r
 
 ### Unprioritized
 
-- [MODULES] `expanse-multiline-dump` — **Parse `expanse dump` output correctly when an expansion spans several lines.** The `gmatch` in `expanse.lua:23` assumes each expansion is exactly one line, so a multi-line snippet desynchronises every short/expansion pair after it.
+- [MODULES] `expanse-multiline-dump` — **Parse `expanse dump` output correctly when an expansion spans several lines.** The `gmatch` in `expanse.lua:35` assumes each expansion is exactly one line, so a multi-line snippet desynchronises every short/expansion pair after it.
   - Source: config review in a Claude Code session, 2026-10-07
   - Starting point: check what `~/bin/expanse dump` emits for a multi-line expansion; the fix depends on whether the format is delimited at all, which may need a change to `expanse` itself.
-  - Related: `expanse-shell-quoting`
 - [TOOLING] `adopt-luacheck` — **Add luacheck to the lint gate with a `.luacheckrc` that knows the `hs` and `spoon` globals.** `luac -p` only proves files parse; luacheck would catch accidental globals and unused locals, both of which have already been fixed by hand in this repository's history.
   - Source: config review in a Claude Code session, 2026-10-07
   - Starting point: decide whether vendored spoons are excluded (AClock defines a global `getframe`), then clear the remaining warnings or record them as baseline; install via `luarocks` or apt `lua-check` in CI.
@@ -58,10 +57,6 @@ Ordinary follow-ups and bugs found during other work live here. Whole-codebase r
   - Source: config review in a Claude Code session, 2026-10-07
   - Starting point: compute each row's week from the Monday that starts it with `os.date("%V", ...)`; rows can cross a year boundary, so do not just add the row index.
   - Related: `floatcalendar-sunday-start`
-- [MODULES] `expanse-shell-quoting` — **Quote the abbreviation passed to `~/bin/expanse get`.** `expanse.lua:16` concatenates `choice.text` into a shell command unquoted, so a short name with a space, quote or `$` breaks or misbehaves.
-  - Source: config review in a Claude Code session, 2026-10-07
-  - Starting point: single-quote each argument in `call_expanse` (escaping embedded single quotes), or switch to `hs.task` with an argument list.
-  - Related: `expanse-multiline-dump`
 - [CONFIG] `hyper-embiggen-blocking` — **Run `embiggen` without blocking Hammerspoon.** `hyper.lua:16` runs it through a login shell with `hs.execute(..., true)`, which blocks every hotkey while the shell profile loads and may run before the app's window exists.
   - Source: config review in a Claude Code session, 2026-10-07
   - Starting point: `hs.task` with the resolved path to `embiggen`; consider a short delay or an application watcher for apps that are still launching.

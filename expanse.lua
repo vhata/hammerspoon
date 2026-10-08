@@ -1,7 +1,18 @@
 local MAX_LENGTH = 100
 
+-- hs.execute runs the command through /bin/sh, so wrap each word in single
+-- quotes (closing, escaping and reopening around any embedded single quote)
+-- to pass it through as one literal argument.
+local function shell_quote(s)
+    return "'" .. s:gsub("'", "'\\''") .. "'"
+end
+
 local function call_expanse(args)
-    local command = os.getenv("HOME") .. "/bin/expanse " .. table.concat(args, " ")
+    local words = {shell_quote(os.getenv("HOME") .. "/bin/expanse")}
+    for _, arg in ipairs(args) do
+        table.insert(words, shell_quote(arg))
+    end
+    local command = table.concat(words, " ")
     local output, status = hs.execute(command)
     if not status then
         hs.alert.show("Error running expanse: " .. output)
@@ -13,7 +24,8 @@ local function callback(choice)
     if not choice then
         return
     end
-    local expando = call_expanse({'get', choice.text})
+    -- "--" stops expanse reading a name that starts with "-" as an option
+    local expando = call_expanse({'get', '--', choice.text})
     hs.pasteboard.setContents(expando)
 end
 

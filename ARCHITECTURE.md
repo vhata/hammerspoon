@@ -16,7 +16,7 @@ What the configuration is now and the invariants reviews check.
 ## Shared interfaces
 
 - `leader.bind(key, fn)` and the leader trigger keys (right Ctrl keycode 62, right Shift keycode 60).
-- External commands the config shells out to: `embiggen` (on the login-shell `PATH`), `~/bin/expanse` (`dump` and `get <short>`). Neither lives in this repository.
+- External commands the config shells out to: `embiggen` (on the login-shell `PATH`), `~/bin/expanse` (`dump` and `get -- <short>`). Neither lives in this repository.
 - `~/.config/nvim/CHEATSHEET.md`, owned by the user's Neovim config.
 
 ## Invariants
