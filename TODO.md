@@ -50,13 +50,10 @@ Ordinary follow-ups and bugs found during other work live here. Whole-codebase r
 - [SPOONS] `floatcalendar-sunday-start` — **Show the 1st of the month when it falls on a Sunday.** The grid header is Monday-first but `Spoons/FloatCalendar.spoon/init.lua:73` offsets by Lua's Sunday-first `wday`, so Feb, Mar and Nov 2026 all start their first row on the 2nd and drop the 1st.
   - Source: config review in a Claude Code session, 2026-10-07
   - Starting point: let `mwday = (wday + 5) % 7 + 1` (Monday 1, Sunday 7) and compute `caltable_idx - mwday + 1`; the existing `+ 2` constant must become `+ 1` or every month shifts. The same offset positions the today highlight. Six rows are then enough (a 31-day month starting Sunday ends at cell 37).
-  - Related: `floatcalendar-seventh-row`, `floatcalendar-iso-weeks`
+  - Related: `floatcalendar-iso-weeks`
 - [CONFIG] `leader-false-trigger-while-typing` — **Stop the leader modal firing when right Shift is used twice in quick succession while typing.** The event tap in `leader.lua:39` only sees `flagsChanged`, so Shift+I, release, Shift+A within half a second counts as a double-tap.
   - Source: config review in a Claude Code session, 2026-10-07
   - Starting point: add `keyDown` to the tap's event types and reset `lastKey`/`lastRelease` on it without swallowing the event.
-- [SPOONS] `floatcalendar-seventh-row` — **Limit the FloatCalendar grid loop to the six rows that exist.** `init.lua:70` loops seven rows, writing day numbers into canvas elements 52 to 58, which are the week-number column and the today rectangle; it is masked today because the week-number loop rewrites 52 to 57 afterwards.
-  - Source: config review in a Claude Code session, 2026-10-07
-  - Related: `floatcalendar-sunday-start`
 - [SPOONS] `floatcalendar-iso-weeks` — **Show ISO 8601 week numbers in FloatCalendar without shelling out.** `%W` gives week 00 for 1 Jan 2026 where ISO `%V` gives 01, so numbers are off by one in years starting Tuesday to Thursday, and `init.lua:96` runs `date` through `hs.execute` on every redraw.
   - Source: config review in a Claude Code session, 2026-10-07
   - Starting point: compute each row's week from the Monday that starts it with `os.date("%V", ...)`; rows can cross a year boundary, so do not just add the row index.
