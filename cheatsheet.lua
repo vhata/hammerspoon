@@ -24,6 +24,11 @@ function M.toggle()
     local markedJs = jf:read("*a")
     jf:close()
 
+    -- Embed the markdown as a JSON array literal. hs.json escapes "/" so "</script>"
+    -- cannot appear, but "<!--" and "<script" can still derail the HTML parser inside
+    -- a script block; "\u003c" is the same character to JavaScript.
+    local mdJson = hs.json.encode({ md }):gsub("<", "\\u003c")
+
     local html = [[<html><head>
     <script>]] .. markedJs .. [[</script>
     <style>
@@ -38,7 +43,7 @@ function M.toggle()
         code { background: #313244; color: #f38ba8; padding: 1px 5px; border-radius: 4px; font-family: "SF Mono", Menlo, monospace; font-size: 11px; }
         p { color: #a6adc8; font-size: 12px; margin: 2px 0; }
     </style></head><body><div id="content"></div>
-    <script>document.getElementById('content').innerHTML = marked.parse(]] .. "\"" .. md:gsub("\\", "\\\\"):gsub("\"", "\\\""):gsub("\n", "\\n"):gsub("\r", "") .. "\"" .. [[);
+    <script>document.getElementById('content').innerHTML = marked.parse(]] .. mdJson .. [[[0]);
     </script></body></html>]]
 
     webview = hs.webview.new(hs.geometry.rect(screen.x + (screen.w - w) / 2, screen.y + (screen.h - h) / 2, w, h))

@@ -60,9 +60,6 @@ Ordinary follow-ups and bugs found during other work live here. Whole-codebase r
 - [CONFIG] `hyper-embiggen-blocking` — **Run `embiggen` without blocking Hammerspoon.** `hyper.lua:16` runs it through a login shell with `hs.execute(..., true)`, which blocks every hotkey while the shell profile loads and may run before the app's window exists.
   - Source: config review in a Claude Code session, 2026-10-07
   - Starting point: `hs.task` with the resolved path to `embiggen`; consider a short delay or an application watcher for apps that are still launching.
-- [MODULES] `cheatsheet-json-encode` — **Escape the cheatsheet markdown with `hs.json.encode`.** `cheatsheet.lua:41` hand-escapes into a JS string literal inside a `<script>` block, so a `</script>` in the markdown ends the script early and breaks the page.
-  - Source: config review in a Claude Code session, 2026-10-07
-  - Starting point: `hs.json.encode` takes a table, so encode `{md}` and read element `[0]` in the page; confirm the encoded output escapes `/` so `</script>` cannot appear literally.
 - [CONFIG] `remove-dead-code` — **Remove unused code and variables.** `spoon.AClock:init()` in `init.lua:11` repeats what `hs.loadSpoon` already does; the `expanse`, `spotify` and `hyper` locals in `init.lua` are never read; `j, st, t, rc` in `hyper.lua:16` and `logger` in FloatCalendar are unused; `Spoons/Calendar.spoon` is tracked but never loaded.
   - Source: config review in a Claude Code session, 2026-10-07
   - Related: `adopt-luacheck`
