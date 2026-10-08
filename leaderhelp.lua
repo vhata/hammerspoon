@@ -57,8 +57,7 @@ local function render(tree, builtins, trigger)
         #content { columns: 2; column-gap: 28px; }
         section { break-inside: avoid; margin-bottom: 14px; }
         h2 { color: #89b4fa; font-size: 13px; text-transform: uppercase; margin: 0 0 6px; }
-        ul { list-style: none; margin: 0; padding: 0; }
-        ul ul { padding-left: 18px; margin-top: 2px; }
+        ul { list-style: none; margin: 2px 0 0 7px; padding: 0 0 0 14px; border-left: 2px solid #313244; }
         li { font-size: 12px; padding: 2px 0; }
         li.group { color: #94e2d5; }
         li.group li { color: #cdd6f4; }
