@@ -66,11 +66,13 @@ function obj:updateCalCanvas()
         month = self.month,
         day = 1
     }).wday
+    -- os.date's wday is Sunday 1 .. Saturday 7; the grid is Monday-first
+    local mweekday_of_firstday = (weekday_of_firstday + 5) % 7 + 1
 
     for i = 1, 6 do
         for k = 1, 7 do
             local caltable_idx = 7 * (i - 1) + k
-            local pushbacked_value = caltable_idx - weekday_of_firstday + 2
+            local pushbacked_value = caltable_idx - mweekday_of_firstday + 1
             if pushbacked_value <= 0 then
                 self.canvas[9 + caltable_idx].text = maxday_of_lastmonth + pushbacked_value
                 self.canvas[9 + caltable_idx].textColor = othermonthcolor
