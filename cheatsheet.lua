@@ -41,7 +41,7 @@ function M.toggle()
     <script>document.getElementById('content').innerHTML = marked.parse(]] .. "\"" .. md:gsub("\\", "\\\\"):gsub("\"", "\\\""):gsub("\n", "\\n"):gsub("\r", "") .. "\"" .. [[);
     </script></body></html>]]
 
-    webview = hs.webview.new(hs.geometry.rect((screen.w - w) / 2, (screen.h - h) / 2, w, h))
+    webview = hs.webview.new(hs.geometry.rect(screen.x + (screen.w - w) / 2, screen.y + (screen.h - h) / 2, w, h))
         :windowStyle({"borderless", "utility", "HUD"})
         :level(hs.drawing.windowLevels.overlay)
         :shadow(true):alpha(0.95):html(html)

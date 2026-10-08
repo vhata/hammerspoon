@@ -65,9 +65,6 @@ Ordinary follow-ups and bugs found during other work live here. Whole-codebase r
   - Source: config review in a Claude Code session, 2026-10-07
   - Starting point: single-quote each argument in `call_expanse` (escaping embedded single quotes), or switch to `hs.task` with an argument list.
   - Related: `expanse-multiline-dump`
-- [MODULES] `overlays-multi-display` — **Centre the cheatsheet and FloatCalendar on the screen they open on.** Both compute position from the screen frame's width and height but ignore its `x` and `y`, so on a second display they open on the wrong screen; FloatCalendar also fixes its position once at load time.
-  - Source: config review in a Claude Code session, 2026-10-07
-  - Starting point: `cheatsheet.lua:44` and `Spoons/FloatCalendar.spoon/init.lua:109`; recompute the frame from `hs.screen.mainScreen():frame()` on each show.
 - [CONFIG] `hyper-embiggen-blocking` — **Run `embiggen` without blocking Hammerspoon.** `hyper.lua:16` runs it through a login shell with `hs.execute(..., true)`, which blocks every hotkey while the shell profile loads and may run before the app's window exists.
   - Source: config review in a Claude Code session, 2026-10-07
   - Starting point: `hs.task` with the resolved path to `embiggen`; consider a short delay or an application watcher for apps that are still launching.

@@ -102,13 +102,11 @@ function obj:updateCalCanvas()
 end
 
 function obj:init()
-    local cscreen = hs.screen.mainScreen()
-    local cres = cscreen:fullFrame()
-
+    -- Positioned on each show(), on whichever screen is current then.
     if not self.canvas then
         self.canvas = hs.canvas.new({
-            x = (cres.w - self.calw) / 2,
-            y = (cres.h - self.calh) / 2,
+            x = 0,
+            y = 0,
             w = self.calw,
             h = self.calh
         })
@@ -258,6 +256,11 @@ function obj:isShowing()
 end
 
 function obj:show()
+    local screen = hs.screen.mainScreen():frame()
+    self.canvas:topLeft({
+        x = screen.x + (screen.w - self.calw) / 2,
+        y = screen.y + (screen.h - self.calh) / 2
+    })
     self:updateCalCanvas()
     self.canvas:show()
     self.hotkeys = {hs.hotkey.bind({}, 'escape', function()
