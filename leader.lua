@@ -63,10 +63,12 @@ builtins = {
     { mods = {}, key = "escape", display = "esc", label = "Close the leader", fn = deactivate },
 }
 
--- Unmodified keys taken by builtins, which tree items cannot use.
+-- Keys taken by builtins, which tree items cannot use: unmodified builtin
+-- keys, and every builtin's display name so the help never shows one twice.
 local reserved = {}
 for _, b in ipairs(builtins) do
     if #b.mods == 0 then reserved[b.key] = true end
+    reserved[b.display] = true
 end
 
 -- Why an item cannot be bound, or nil if it can.
@@ -91,7 +93,8 @@ local function build(items, crumb)
     for _, item in ipairs(items) do
         local why = problem(item, seen)
         if why then
-            print("leader: skipping " .. crumb .. " " .. tostring(type(item) == "table" and item.key) .. ": " .. why)
+            print("leader: skipping " .. (crumb == "" and "top level" or crumb) .. " "
+                .. tostring(type(item) == "table" and item.key) .. ": " .. why)
         elseif item.items then
             local childCrumb = crumb == "" and item.label or (crumb .. " › " .. item.label)
             local child, childItems = build(item.items, childCrumb)
