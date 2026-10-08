@@ -4,7 +4,6 @@ hs.loadSpoon("FloatCalendar")
 hs.loadSpoon("ReloadConfiguration")
 local expanse = require("expanse")
 local spotify = require("spotify")
-local hyper = require("hyper")
 local cheatsheet = require("cheatsheet")
 local leader = require("leader")
 

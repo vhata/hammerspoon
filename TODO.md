@@ -50,8 +50,7 @@ Ordinary follow-ups and bugs found during other work live here. Whole-codebase r
 
 ### Unprioritized
 
-- [CONFIG] `remove-dead-code` — **Remove unused code and variables.** `spoon.AClock:init()` in `init.lua:11` repeats what `hs.loadSpoon` already does; the `expanse`, `spotify` and `hyper` locals in `init.lua` are never read; `logger` in FloatCalendar is unused; `Spoons/Calendar.spoon` is tracked but never loaded.
-  - `local bindings = {}` in `leader.lua:4` is also never used (found while fixing `leader-false-trigger-while-typing`, PR #3, 2026-10-08).
+- [CONFIG] `remove-dead-code` — **Remove unused code and variables.** `spoon.AClock:init()` in `init.lua:10` repeats what `hs.loadSpoon` already does; the `expanse` and `spotify` locals in `init.lua` are never read; `logger` in FloatCalendar is unused; `Spoons/Calendar.spoon` is tracked but never loaded.
   - Source: config review in a Claude Code session, 2026-10-07
   - Related: `adopt-luacheck`
 - [SPOONS] `floatcalendar-global-hotkeys` — **Stop the open FloatCalendar from swallowing R, the arrow keys and Escape in other apps.** `obj:show()` in `Spoons/FloatCalendar.spoon/init.lua` binds them as global hotkeys while the calendar is shown, so typing `r` anywhere resets the calendar instead of reaching the focused app.
