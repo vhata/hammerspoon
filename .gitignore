@@ -1,3 +1,7 @@
+# Agent workflow: unattended-run audit log and prepared PR bodies
+AUDIT.md
+.feral/
+
 # Compiled Lua sources
 luac.out
 
