@@ -77,7 +77,7 @@ Ordinary follow-ups and bugs found during other work live here. Whole-codebase r
 - [MODULES] `spotify-async-artwork` — **Fetch Spotify album art without blocking.** `hs.image.imageFromURL` in `spotify.lua:19` is a synchronous network fetch, so a slow connection briefly freezes Hammerspoon.
   - Source: config review in a Claude Code session, 2026-10-07
   - Starting point: `hs.image.imageFromURL(url, callbackFn)` is asynchronous when given a callback; send the notification from the callback, or without an image when the URL is nil.
-- [CONFIG] `remove-dead-code` — **Remove unused code and variables.** `spoon.AClock:init()` in `init.lua:11` repeats what `hs.loadSpoon` already does; the `expanse`, `spotify` and `hyper` locals in `init.lua` are never read; `j, st, t, rc` in `hyper.lua:16`, `notification` in `spotify.lua:42` and `logger` in FloatCalendar are unused; `Spoons/Calendar.spoon` is tracked but never loaded.
+- [CONFIG] `remove-dead-code` — **Remove unused code and variables.** `spoon.AClock:init()` in `init.lua:11` repeats what `hs.loadSpoon` already does; the `expanse`, `spotify` and `hyper` locals in `init.lua` are never read; `j, st, t, rc` in `hyper.lua:16` and `logger` in FloatCalendar are unused; `Spoons/Calendar.spoon` is tracked but never loaded.
   - Source: config review in a Claude Code session, 2026-10-07
   - Related: `adopt-luacheck`
 - [SPOONS] `floatcalendar-global-hotkeys` — **Stop the open FloatCalendar from swallowing R, the arrow keys and Escape in other apps.** `Spoons/FloatCalendar.spoon/init.lua:263-275` binds them as global hotkeys while the calendar is shown, so typing `r` anywhere resets the calendar instead of reaching the focused app.
