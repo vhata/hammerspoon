@@ -46,21 +46,16 @@ Ordinary follow-ups and bugs found during other work live here. Whole-codebase r
 
 ### Unprioritized
 
-- [SPOONS] `floatcalendar-sunday-start` — **Show the 1st of the month when it falls on a Sunday.** The grid header is Monday-first but `Spoons/FloatCalendar.spoon/init.lua:73` offsets by Lua's Sunday-first `wday`, so Feb, Mar and Nov 2026 all start their first row on the 2nd and drop the 1st.
-  - Source: config review in a Claude Code session, 2026-10-07
-  - Starting point: let `mwday = (wday + 5) % 7 + 1` (Monday 1, Sunday 7) and compute `caltable_idx - mwday + 1`; the existing `+ 2` constant must become `+ 1` or every month shifts. The same offset positions the today highlight. Six rows are then enough (a 31-day month starting Sunday ends at cell 37).
-  - Related: `floatcalendar-iso-weeks`
 - [SPOONS] `floatcalendar-iso-weeks` — **Show ISO 8601 week numbers in FloatCalendar without shelling out.** `%W` gives week 00 for 1 Jan 2026 where ISO `%V` gives 01, so numbers are off by one in years starting Tuesday to Thursday, and `init.lua:96` runs `date` through `hs.execute` on every redraw.
   - Source: config review in a Claude Code session, 2026-10-07
   - Starting point: compute each row's week from the Monday that starts it with `os.date("%V", ...)`; rows can cross a year boundary, so do not just add the row index.
-  - Related: `floatcalendar-sunday-start`
 - [CONFIG] `hyper-embiggen-blocking` — **Run `embiggen` without blocking Hammerspoon.** `hyper.lua:16` runs it through a login shell with `hs.execute(..., true)`, which blocks every hotkey while the shell profile loads and may run before the app's window exists.
   - Source: config review in a Claude Code session, 2026-10-07
   - Starting point: `hs.task` with the resolved path to `embiggen`; consider a short delay or an application watcher for apps that are still launching.
 - [CONFIG] `remove-dead-code` — **Remove unused code and variables.** `spoon.AClock:init()` in `init.lua:11` repeats what `hs.loadSpoon` already does; the `expanse`, `spotify` and `hyper` locals in `init.lua` are never read; `j, st, t, rc` in `hyper.lua:16` and `logger` in FloatCalendar are unused; `Spoons/Calendar.spoon` is tracked but never loaded.
   - Source: config review in a Claude Code session, 2026-10-07
   - Related: `adopt-luacheck`
-- [SPOONS] `floatcalendar-global-hotkeys` — **Stop the open FloatCalendar from swallowing R, the arrow keys and Escape in other apps.** `Spoons/FloatCalendar.spoon/init.lua:263-275` binds them as global hotkeys while the calendar is shown, so typing `r` anywhere resets the calendar instead of reaching the focused app.
+- [SPOONS] `floatcalendar-global-hotkeys` — **Stop the open FloatCalendar from swallowing R, the arrow keys and Escape in other apps.** `obj:show()` in `Spoons/FloatCalendar.spoon/init.lua` binds them as global hotkeys while the calendar is shown, so typing `r` anywhere resets the calendar instead of reaching the focused app.
   - Source: independent review of PR #1, 2026-10-07
   - Starting point: an `hs.hotkey.modal` entered on show, or hide the calendar on any unbound key; decide whether the calendar should take focus.
 - [CONFIG] `reload-watcher-filter` — **Reload only when config files change, not on writes under `.git/` or worktree directories.** `ReloadConfiguration` reloads on any change under `~/.hammerspoon`, including every git operation, which is why worktrees have to live outside the repository.
