@@ -1,26 +1,20 @@
+local overlay = require("overlay")
+
 local M = {}
-local webview = nil
+local view = overlay.new()
 
-function M.toggle()
-    if webview then
-        webview:delete()
-        webview = nil
-        if M._escTap then M._escTap:stop(); M._escTap = nil end
-        return
-    end
-
+local function build(screen)
     local path = os.getenv("HOME") .. "/.config/nvim/CHEATSHEET.md"
     local f = io.open(path, "r")
-    if not f then hs.alert.show("Cheatsheet not found"); return end
+    if not f then hs.alert.show("Cheatsheet not found"); return nil end
     local md = f:read("*a")
     f:close()
 
-    local screen = hs.screen.mainScreen():frame()
     local w, h = math.min(1200, screen.w * 0.85), screen.h * 0.85
 
     local jsPath = os.getenv("HOME") .. "/.hammerspoon/marked.min.js"
     local jf = io.open(jsPath, "r")
-    if not jf then hs.alert.show("marked.min.js not found"); return end
+    if not jf then hs.alert.show("marked.min.js not found"); return nil end
     local markedJs = jf:read("*a")
     jf:close()
 
@@ -46,16 +40,11 @@ function M.toggle()
     <script>document.getElementById('content').innerHTML = marked.parse(]] .. mdJson .. [[[0]);
     </script></body></html>]]
 
-    webview = hs.webview.new(hs.geometry.rect(screen.x + (screen.w - w) / 2, screen.y + (screen.h - h) / 2, w, h))
-        :windowStyle({"borderless", "utility", "HUD"})
-        :level(hs.drawing.windowLevels.overlay)
-        :shadow(true):alpha(0.95):html(html)
-        :show():bringToFront(true)
+    return html, w, h
+end
 
-    -- Escape to dismiss
-    M._escTap = hs.eventtap.new({hs.eventtap.event.types.keyDown}, function(e)
-        if e:getKeyCode() == 53 then M.toggle(); return true end
-    end):start()
+function M.toggle()
+    view.toggle(build)
 end
 
 return M

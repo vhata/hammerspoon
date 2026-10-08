@@ -1,41 +1,134 @@
--- Double-tap right Ctrl (external keyboard) or right Shift (laptop),
--- then press a key to trigger an action.
+-- Double-tap right Ctrl (external keyboard) or right Shift (laptop), then
+-- press keys to walk the tree passed to M.setup. Each group in the tree is
+-- its own hs.hotkey.modal: pressing a group's key swaps to that group's
+-- modal and restarts the timeout; pressing an action's key closes the
+-- leader and runs the action. Escape closes it and "?" shows the whole tree
+-- from any layer.
+local help = require("leaderhelp")
+
 local M = {}
-local bindings = {}
-local modal = hs.hotkey.modal.new()
+
+-- How long each layer waits for a key, in seconds.
+local TIMEOUT = 1
+
+-- Every modal built by M.setup, held so the garbage collector cannot stop it.
+local modals = {}
+local root = nil
+-- The items M.setup actually bound, for the help overlay.
+local tree = {}
+local active = nil
+local timer = nil
+
 local lastRelease = 0
 local lastKey = nil
 local pressedKey = nil
-local timeout = nil
 
--- keycode -> { flag name, alert symbol }
+-- keycode -> { flag name, alert symbol, name in the help }
 local triggers = {
-    [62] = { flag = "ctrl",  symbol = "⌃⌃" },
-    [60] = { flag = "shift", symbol = "⇧⇧" },
+    [62] = { flag = "ctrl",  symbol = "⌃⌃", name = "right Ctrl" },
+    [60] = { flag = "shift", symbol = "⇧⇧", name = "right Shift" },
 }
 local alertSymbol = "⇧⇧"
 
+local function triggerText()
+    local names = {}
+    for _, t in pairs(triggers) do names[#names + 1] = t.name end
+    table.sort(names)
+    return "Double-tap " .. table.concat(names, " or ")
+end
+
 local function deactivate()
-    modal:exit()
-    if timeout then timeout:stop(); timeout = nil end
+    if active then active:exit(); active = nil end
+    if timer then timer:stop(); timer = nil end
     hs.alert.closeAll()
 end
 
-function modal:entered()
-    hs.alert.show(alertSymbol, 0.5)
-    timeout = hs.timer.doAfter(1, deactivate)
+local function activate(modal, crumb)
+    deactivate()
+    active = modal
+    modal:enter()
+    hs.alert.show(crumb == "" and alertSymbol or (alertSymbol .. "  " .. crumb), TIMEOUT)
+    timer = hs.timer.doAfter(TIMEOUT, deactivate)
 end
 
-function modal:exited() end
-
-function M.bind(key, fn)
-    modal:bind({}, key, function()
-        deactivate()
-        fn()
-    end)
+-- Keys the leader binds in every layer itself. display and label are for
+-- the help overlay.
+local builtins
+local function showHelp()
+    deactivate()
+    help.toggle(tree, builtins, triggerText())
+end
+builtins = {}
+for _, b in ipairs({
+    { mods = {"shift"}, key = "/", display = "?", label = "Show this help", fn = showHelp },
+    { mods = {}, key = "escape", display = "esc", label = "Close the leader", fn = deactivate },
+}) do
+    -- hs.hotkey raises on a key the current layout lacks, which would fail the reload.
+    if hs.keycodes.map[b.key] then
+        builtins[#builtins + 1] = b
+    else
+        print("leader: no " .. b.key .. " key on this keyboard layout; " .. b.display .. " is unavailable")
+    end
 end
 
-modal:bind({}, "escape", deactivate)
+-- Keys taken by builtins, which tree items cannot use: unmodified builtin
+-- keys, and every builtin's display name so the help never shows one twice.
+local reserved = {}
+for _, b in ipairs(builtins) do
+    if #b.mods == 0 then reserved[b.key] = true end
+    reserved[b.display] = true
+end
+
+-- Why an item cannot be bound, or nil if it can.
+local function problem(item, seen)
+    if type(item) ~= "table" then return "not a table" end
+    if type(item.key) ~= "string" or not hs.keycodes.map[item.key] then return "unknown key" end
+    if reserved[item.key] then return "reserved key" end
+    if seen[item.key] then return "duplicate key" end
+    if type(item.label) ~= "string" then return "missing label" end
+    if (item.fn == nil) == (item.items == nil) then return "needs exactly one of fn or items" end
+    if item.fn ~= nil and type(item.fn) ~= "function" then return "fn is not a function" end
+    if item.items ~= nil and type(item.items) ~= "table" then return "items is not a table" end
+end
+
+-- Build a modal for one group's items. Returns the modal and the items that
+-- were bound, so anything rendered from the tree matches what the keys do.
+local function build(items, crumb)
+    local modal = hs.hotkey.modal.new()
+    modals[#modals + 1] = modal
+    for _, b in ipairs(builtins) do modal:bind(b.mods, b.key, b.fn) end
+    local bound, seen = {}, {}
+    for _, item in ipairs(items) do
+        local why = problem(item, seen)
+        if why then
+            print("leader: skipping " .. (crumb == "" and "top level" or crumb) .. " "
+                .. tostring(type(item) == "table" and item.key) .. ": " .. why)
+        elseif item.items then
+            local childCrumb = crumb == "" and item.label or (crumb .. " › " .. item.label)
+            local child, childItems = build(item.items, childCrumb)
+            modal:bind({}, item.key, function() activate(child, childCrumb) end)
+            seen[item.key] = true
+            bound[#bound + 1] = { key = item.key, label = item.label, items = childItems }
+        else
+            local fn = item.fn
+            modal:bind({}, item.key, function()
+                deactivate()
+                fn()
+            end)
+            seen[item.key] = true
+            bound[#bound + 1] = { key = item.key, label = item.label, fn = fn }
+        end
+    end
+    return modal, bound
+end
+
+-- Bind the leader tree. Each item is a table with a key (an hs.keycodes.map
+-- name), a label, and either fn (an action) or items (a group of further
+-- items). Call once; invalid items are skipped with a console message rather
+-- than failing the reload.
+function M.setup(items)
+    root, tree = build(items, "")
+end
 
 local keyDown = hs.eventtap.event.types.keyDown
 
@@ -59,7 +152,7 @@ M.tap = hs.eventtap.new({hs.eventtap.event.types.flagsChanged, keyDown}, functio
         lastRelease = 0
         lastKey = nil
         alertSymbol = trigger.symbol
-        modal:enter()
+        if root then activate(root, "") end
     else
         lastRelease = now
         lastKey = kc

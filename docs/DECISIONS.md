@@ -2,6 +2,15 @@
 
 Non-obvious choices and their trade-offs, dated, newest section first. Read the relevant entry before changing a mechanism that looks odd. Choices made autonomously under a delegation are recorded here for the user to review; an entry is a record, not a claim that the capability is complete.
 
+## 2026-10-08
+
+| Decision | Reason and trade-off |
+| --- | --- |
+| The leader's keys are one table passed to `leader.setup` in `init.lua`, and the `?` overlay is rendered from the items that call actually bound. | The help overlay and the bindings come from the same data, so they cannot drift; an invalid item (unknown or duplicate key, missing label) is skipped with a console message rather than failing the reload, and is left out of the help too. Cost: other modules cannot add leader keys themselves; they export functions and `init.lua` places them in the tree. |
+| Each leader group is its own `hs.hotkey.modal`, and each layer gets the full one-second timeout. | Swapping modals keeps every layer's keys independent (`o` can mean Overlays at the top and Obsidian under `a`) and needs no key-sequence parser. Restarting the timeout per layer keeps a three-key sequence from having to fit in one second. The alert now stays up for as long as its layer is live, rather than half a second. |
+| `?` and Escape are bound by the leader in every layer, so tree items cannot use Escape. `?` is bound as Shift+`/`, so a plain `/` item is still possible. | One help key that works wherever you are in the tree, without each group having to declare it. |
+| The Cmd+Alt+Ctrl app hotkeys and `hyper.lua` were removed when the apps moved under leader `a`. | The point of the leader is to free global shortcuts. Restoring them is a loop over the same app list calling `hs.hotkey.bind({"cmd", "alt", "ctrl"}, key, ...)` with `hs.application.launchOrFocus`. |
+
 ## 2026-10-07
 
 | Decision | Reason and trade-off |

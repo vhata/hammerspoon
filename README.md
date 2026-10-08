@@ -6,11 +6,12 @@ For use with [Hammerspoon](https://www.hammerspoon.org/). Clone to `~/.hammerspo
 
 | Keys | Action |
 | --- | --- |
-| Cmd+Alt+Ctrl+C / V / O / D | Focus or launch Chrome / Vivaldi / Obsidian / Discord |
-| Double-tap right Ctrl or right Shift, then C | Toggle the floating clock |
-| Double-tap, then L | Toggle the floating calendar (arrows change month and year, R resets, Esc closes) |
-| Double-tap, then E | Emoji picker |
-| Double-tap, then V | Neovim cheatsheet from `~/.config/nvim/CHEATSHEET.md` |
+| Double-tap right Ctrl or right Shift, then ? | Overlay listing every leader key, generated from the tree in `init.lua` |
+| Double-tap, then O, C | Toggle the floating clock |
+| Double-tap, then O, L | Toggle the floating calendar (arrows change month and year, R resets, Esc closes) |
+| Double-tap, then O, E | Emoji picker |
+| Double-tap, then O, V | Neovim cheatsheet from `~/.config/nvim/CHEATSHEET.md` |
+| Double-tap, then A, C / V / O / D | Focus or launch Chrome / Vivaldi / Obsidian / Discord |
 | Cmd+Alt+E | Text-expansion picker (needs `~/bin/expanse`) |
 | F14 or keypad / | Spotify now-playing notification |
 
