@@ -8,7 +8,7 @@ For use with [Hammerspoon](https://www.hammerspoon.org/). Clone to `~/.hammerspo
 | --- | --- |
 | Double-tap right Ctrl or right Shift, then ? | Overlay listing every leader key, generated from the tree in `init.lua` |
 | Double-tap, then O, C | Toggle the floating clock |
-| Double-tap, then O, L | Toggle the floating calendar (arrows change month and year, R resets, Esc closes) |
+| Double-tap, then O, L | Toggle the floating calendar, open on the current month (Left and Right change month, Up and Down change year, R returns to today, Esc closes; any other key or a click closes it and goes through to the app) |
 | Double-tap, then O, E | Emoji picker |
 | Double-tap, then O, V | Neovim cheatsheet from `~/.config/nvim/CHEATSHEET.md` |
 | Double-tap, then A, C / V / O / D | Focus or launch Chrome / Vivaldi / Obsidian / Discord |
