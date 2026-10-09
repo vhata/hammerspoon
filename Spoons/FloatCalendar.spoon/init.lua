@@ -313,8 +313,10 @@ local autorepeat = hs.eventtap.event.properties.keyboardEventAutorepeat
 
 -- A toggle this soon after a key or click dismissed the calendar is taken to
 -- come from that same keystroke sequence (a hotkey, or the leader's keys,
--- whose layers each wait one second) and leaves the calendar closed.
-local TOGGLE_GRACE = 1
+-- whose layers each wait one second, plus a margin because the dismissal is
+-- recorded just before the leader restarts its timer) and leaves the
+-- calendar closed.
+local TOGGLE_GRACE = 1.2
 
 -- The calendar's keys reach it only while it is open, and only until the
 -- user does anything else: any other key, a modified key or a mouse click
