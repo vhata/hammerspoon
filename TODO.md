@@ -50,21 +50,15 @@ Ordinary follow-ups and bugs found during other work live here. Whole-codebase r
 
 ### Unprioritized
 
+- [CONFIG] `drop-reloadconfiguration-spoon` — **Delete the vendored `ReloadConfiguration` spoon now that nothing loads it.** `reload.lua` replaced it as the config watcher; the directory under `Spoons/` is dead weight and `AGENTS.md` still lists it among the vendored spoons.
+  - Source: writing `reload-watcher-filter`, 2026-10-09
+  - Related: `remove-dead-code`
 - [CONFIG] `remove-dead-code` — **Remove unused code and variables.** `spoon.AClock:init()` in `init.lua:10` repeats what `hs.loadSpoon` already does; the `expanse` and `spotify` locals in `init.lua` are never read; `logger` in FloatCalendar is unused; `Spoons/Calendar.spoon` is tracked but never loaded.
   - Source: config review in a Claude Code session, 2026-10-07
   - Related: `adopt-luacheck`
 - [SPOONS] `floatcalendar-global-hotkeys` — **Stop the open FloatCalendar from swallowing R, the arrow keys and Escape in other apps.** `obj:show()` in `Spoons/FloatCalendar.spoon/init.lua` binds them as global hotkeys while the calendar is shown, so typing `r` anywhere resets the calendar instead of reaching the focused app.
   - Source: independent review of PR #1, 2026-10-07
   - Starting point: an `hs.hotkey.modal` entered on show, or hide the calendar on any unbound key; decide whether the calendar should take focus.
-- [CONFIG] `reload-watcher-filter` — **Reload only when config files change, not on writes under `.git/` or worktree directories.** `ReloadConfiguration` reloads on any change under `~/.hammerspoon`, including every git operation, which is why worktrees have to live outside the repository.
-  - Source: independent review of PR #1, 2026-10-07
-  - Starting point: the pathwatcher callback receives the changed paths; filter to `.lua` files outside `.git/`, either in `init.lua` via `watch_paths` replacement or a small wrapper instead of the vendored spoon.
-  - Related: `reload-mid-checkout`
-- [CONFIG] `reload-mid-checkout` — **Survive a `git pull` that renames or deletes a module, instead of leaving Hammerspoon on a dead config until a manual reload.** `ReloadConfiguration` calls `hs.reload` on the first file event, so a pull can be loaded half-applied; the failed load then stops before `spoon.ReloadConfiguration:start()` at the bottom of `init.lua`, so nothing reloads once the checkout finishes.
-  - Seen pulling `763544a` (#13) into `~/.hammerspoon` at 17:38:33: the reload a second later ran the old `init.lua` against a tree where `hyper.lua` was already deleted and failed with `module 'hyper' not found` at `init.lua:7`.
-  - Source: debugging a live reload failure in a Claude Code session, 2026-10-08
-  - Starting point: debounce the reload (an `hs.timer.delayed` of about a second, restarted on each event) and start the watcher before any `require` in `init.lua`, so a failed load still reloads on the next change. The spoon is vendored, so do it in `init.lua` or a small wrapper; this likely shares the wrapper with `reload-watcher-filter`.
-  - Related: `reload-watcher-filter`
 - [SPOONS] `floatcalendar-title-offset` — **Position the FloatCalendar title using the canvas height.** The title's `frame.y` in `obj:init()` divides by `self.calw` where `self.calh` is meant, so the title sits about 3 px off.
   - Source: fixing `floatcalendar-seventh-row`, PR #7, 2026-10-08
 - [SPOONS] `floatcalendar-midnight-refresh` — **Move the today highlight when the date changes while the calendar is open.** `updateCalCanvas` reads the date only on redraw, so a calendar left open past midnight highlights yesterday until the user navigates or presses R.
