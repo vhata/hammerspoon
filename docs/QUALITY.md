@@ -41,7 +41,7 @@ None. See `docs/DECISIONS.md`.
 
 ## Branch protection
 
-Not configured. `main` accepts direct pushes. The proposed settings are in the PR that installed this document; once applied, record them here.
+Applied on 2026-10-07. A pull request is required with zero approving reviews (independent agent review is recorded in `## Review`); required checks `check` and `Queue and PR hygiene`; branches need not be up to date with `main` before merging; linear history required; conversation resolution not required; force pushes and deletions on `main` allowed for the owner (agents never use them); not enforced for administrators, which permits the direct-to-main exceptions in [AGENTS.md](../AGENTS.md). Squash merging only, PR title and body as the commit message, head branches deleted on merge.
 
 ## PR evidence
 

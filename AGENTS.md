@@ -4,7 +4,8 @@ Personal [Hammerspoon](https://www.hammerspoon.org/) configuration for one macOS
 
 ## Workflow
 
-- Every unit of work is a branch, a worktree and a pull request. Branch `<queue>/<slug>` (`todo/`, `review/`; `fix/` or `task/` for direct requests). Never commit to `main` directly; there are no exceptions.
+- Every unit of work is a branch, a worktree and a pull request. Branch `<queue>/<slug>` (`todo/`, `review/`; `fix/` or `task/` for direct requests). 
+- Two things go straight to `main` without a branch or PR. Documentation that records work to be done: adding or triaging `TODO.md` entries, and plans (`plans/YYYY-MM-DD-<slug>.md`); a plan is planning for work, not work, and everything it describes still goes through branches, PRs and review. Housekeeping metadata files such as `.git-blame-ignore-revs`, only when the user says so for that case. Extrapolate with common sense and say so in the commit; everything else, including all code and any documentation that describes behaviour, goes through a PR.
 - **The main checkout at `~/.hammerspoon` is the live config.** Hammerspoon loads whatever is checked out there and reloads on any file change under it. Keep it on `main`, never switch its branch, and never create worktrees inside it. Worktrees live in `~/.hammerspoon-worktrees/` (pass `--dir ../.hammerspoon-worktrees` to `start-work.sh`). See [`docs/DECISIONS.md`](docs/DECISIONS.md).
 - Before claiming anything run `bash scripts/workflow/claim-check.sh <slug>`, then create the branch and worktree immediately with `bash scripts/workflow/start-work.sh <queue> <slug> --dir ../.hammerspoon-worktrees`.
 - Open a draft PR after the first meaningful commit. The body follows `.github/pull_request_template.md` and opens with `## Why`. PRs are squash-merged, so the body is the commit message. If no PR can be opened, save the body as `.feral/pr-<slug>.md`, say so, and leave the branch and worktree for the user.
