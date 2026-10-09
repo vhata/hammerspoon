@@ -77,5 +77,5 @@ Ordinary follow-ups and bugs found during other work live here. Whole-codebase r
   - Source: fixing `floatcalendar-seventh-row`, PR #7, 2026-10-08
 - [SPOONS] `floatcalendar-midnight-refresh` — **Move the today highlight when the date changes while the calendar is open.** `updateCalCanvas` reads the date only on redraw, so a calendar left open past midnight highlights yesterday until the user navigates or presses R.
   - Source: fixing `floatcalendar-seventh-row`, PR #7, 2026-10-08
-  - Starting point: a timer started in `show()` and stopped in `hide()` that redraws at the next midnight. `self.year` and `self.month` are set only in `init()` and `resetDate()`, so a redraw across a month boundary keeps showing the old month; reset them unless the user has navigated away.
+  - Starting point: a timer started in `show()` and stopped in `hide()` that redraws at the next midnight. `self.year` and `self.month` are reset to today only in `init()` and `resetDate()`, so a redraw across a month boundary keeps showing the old month; reset them unless the user has navigated away.
   - The same staleness affects a calendar closed and reopened after the month changes: `show()` does not reset the viewed month, so it reopens on the month that was current at load time.
