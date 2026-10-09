@@ -1,7 +1,16 @@
+-- Start the reload watcher before loading anything that can fail, so a load
+-- that breaks part-way (a half-applied git pull, a typo) still reloads on the
+-- next change. If reload.lua itself fails, fall back to reloading on any
+-- change; the global keeps that watcher from being garbage-collected.
+local reloadOk, reloadErr = pcall(function() require("reload").start() end)
+if not reloadOk then
+    print("reload.lua failed, reloading on any change instead: " .. tostring(reloadErr))
+    reloadFallbackWatcher = hs.pathwatcher.new(hs.configdir, hs.reload):start()
+end
+
 hs.loadSpoon("AClock")
 hs.loadSpoon("Emojis")
 hs.loadSpoon("FloatCalendar")
-hs.loadSpoon("ReloadConfiguration")
 local expanse = require("expanse")
 local spotify = require("spotify")
 local cheatsheet = require("cheatsheet")
@@ -35,5 +44,3 @@ leader.setup({
         -- app("g", "Signal"),
     } },
 })
-
-spoon.ReloadConfiguration:start()
