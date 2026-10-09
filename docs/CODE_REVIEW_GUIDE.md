@@ -79,7 +79,7 @@ A check that passed at the previous review and fails now is a finding.
 3. Reproduce serious bugs (Verified); the rest stay Read.
 4. Review-close triage (below).
 5. Write the snapshot, amend the invariants, add the index row.
-6. Open the review as its own PR. It carries no code fixes; small factual documentation fixes may be separate commits on the review branch, recorded as Fixed.
+6. Open the review as its own PR from a `task/` branch (a `review/<slug>` branch must claim a backlog slug, which a review does not have). It carries no code fixes; small factual documentation fixes may be separate commits on the review branch, recorded as Fixed.
 
 ## Incremental review
 
