@@ -29,7 +29,7 @@ What the configuration is now and the invariants reviews check.
 
 ## Isolation for concurrent work
 
-The main checkout is the live config and must stay on `main`. Worktrees live outside `~/.hammerspoon` so that file edits in them do not trigger `ReloadConfiguration`; git operations in a worktree still write under `~/.hammerspoon/.git` and do trigger a reload. There is no other per-worktree state.
+The main checkout is the live config and must stay on `main`. Worktrees live outside `~/.hammerspoon` so that file edits in them do not trigger `ReloadConfiguration`; git operations in a worktree of the `~/.hammerspoon` clone still write under `~/.hammerspoon/.git` and do trigger a reload (worktrees of a separate clone do not). There is no other per-worktree state.
 
 ## Where to look first
 
