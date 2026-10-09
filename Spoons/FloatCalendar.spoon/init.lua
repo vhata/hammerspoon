@@ -264,7 +264,68 @@ function obj:isShowing()
     return self.canvas:isShowing()
 end
 
+-- Keys the open calendar answers, by keycode, each naming the method it
+-- calls. Looked up on each show, as hs.hotkey.bind did, so a keyboard layout
+-- change is picked up.
+local function calendarKeys()
+    local map = hs.keycodes.map
+    return {
+        [map.escape] = "hide",
+        [map.left] = "prevMonth",
+        [map.right] = "nextMonth",
+        [map.up] = "prevYear",
+        [map.down] = "nextYear",
+        [map.r] = "resetDate"
+    }
+end
+
+local eventTypes = hs.eventtap.event.types
+local autorepeat = hs.eventtap.event.properties.keyboardEventAutorepeat
+
+-- A toggle this soon after a key or click dismissed the calendar is taken to
+-- come from that same keystroke sequence (a hotkey, or the leader's keys,
+-- whose layers each wait one second) and leaves the calendar closed.
+local TOGGLE_GRACE = 1
+
+-- The calendar's keys reach it only while it is open, and only until the
+-- user does anything else: any other key, a modified key or a mouse click
+-- closes it and is passed on untouched, so the keys stop being taken as soon
+-- as the user goes back to another app.
+local function startKeys(self)
+    local keys = calendarKeys()
+    self.keyTap = hs.eventtap.new({eventTypes.keyDown, eventTypes.leftMouseDown, eventTypes.rightMouseDown,
+                                   eventTypes.otherMouseDown}, function(e)
+        if e:getType() == eventTypes.keyDown then
+            -- Only unmodified keys are the calendar's. Arrow keys carry the
+            -- fn flag, so fn is not checked.
+            local flags = e:getFlags()
+            local method = not (flags.cmd or flags.alt or flags.ctrl or flags.shift) and keys[e:getKeyCode()]
+            if method then
+                self[method](self)
+                return true
+            end
+            -- A repeat of any other key is one held since before the
+            -- calendar opened (its first press would have closed it).
+            if e:getProperty(autorepeat) ~= 0 then
+                return false
+            end
+        end
+        self.dismissedAt = hs.timer.secondsSinceEpoch()
+        self:hide()
+        return false
+    end):start()
+end
+
+local function stopKeys(self)
+    if self.keyTap then
+        self.keyTap:stop()
+        self.keyTap = nil
+    end
+end
+
 function obj:show()
+    stopKeys(self)
+    self.dismissedAt = nil
     local screen = hs.screen.mainScreen():frame()
     self.canvas:topLeft({
         x = screen.x + (screen.w - self.calw) / 2,
@@ -272,35 +333,21 @@ function obj:show()
     })
     self:updateCalCanvas()
     self.canvas:show()
-    self.hotkeys = {hs.hotkey.bind({}, 'escape', function()
-        self:hide()
-    end), hs.hotkey.bind({}, 'left', function()
-        self:prevMonth()
-    end), hs.hotkey.bind({}, 'right', function()
-        self:nextMonth()
-    end), hs.hotkey.bind({}, 'up', function()
-        self:prevYear()
-    end), hs.hotkey.bind({}, 'down', function()
-        self:nextYear()
-    end), hs.hotkey.bind({}, 'r', function()
-        self:resetDate()
-    end)}
+    startKeys(self)
     return self
 end
 
 function obj:hide()
-    if self.hotkeys then
-        for _, hotkey in ipairs(self.hotkeys) do
-            hotkey:delete()
-        end
-    end
-    -- hotkey first, if anything goes wrong we don't want the hotkey stuck
+    -- keys first, if anything goes wrong we don't want them stuck
+    stopKeys(self)
     self.canvas:hide()
 end
 
 function obj:toggleShow()
     if self:isShowing() then
         self:hide()
+    elseif self.dismissedAt and hs.timer.secondsSinceEpoch() - self.dismissedAt < TOGGLE_GRACE then
+        self.dismissedAt = nil
     else
         self:show()
     end
