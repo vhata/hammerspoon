@@ -33,7 +33,7 @@ What the configuration is now and the invariants reviews check.
 
 ## Isolation for concurrent work
 
-The main checkout is the live config and must stay on `main`. Worktrees live outside `~/.hammerspoon`, in `~/.hammerspoon-worktrees/` (see [AGENTS.md](AGENTS.md)). The reload watcher ignores writes under `.git/`, under any hidden directory and inside any nested checkout, so neither git operations nor edits in a worktree reload the live config, wherever the worktree is. There is no other per-worktree state.
+The main checkout is the live config and must stay on `main`. Worktrees live outside `~/.hammerspoon`, in `~/.hammerspoon-worktrees/` (see [AGENTS.md](AGENTS.md)). The reload watcher ignores writes under `.git/`, under any hidden directory and inside any nested checkout, so neither edits in a worktree nor its git operations reload the live config, wherever the worktree is. A pull or checkout in the main checkout does reload, once its writes settle. There is no other per-worktree state.
 
 ## Where to look first
 
