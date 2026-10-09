@@ -22,7 +22,7 @@ local watcher, timer
 -- itself) and that root, or nil if it is under none of them.
 function M.relative(path, roots)
     for _, root in ipairs(roots) do
-        if path == root or path == root .. "/" then return "", root end
+        if path == root then return "", root end
         if path:sub(1, #root + 1) == root .. "/" then return path:sub(#root + 2), root end
     end
     return nil
