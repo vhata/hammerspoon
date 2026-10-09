@@ -57,6 +57,15 @@ local function callback(choice)
     end
     -- expanse prints the expansion with Python's print(), which adds a newline
     local expando = output:gsub("\r?\n$", "", 1)
+    if expando == "" then
+        -- expanse get prints nothing and exits 0 for an unknown name
+        if output == "" then
+            hs.alert.show('No expansion named "' .. choice.text .. '"')
+        else
+            hs.alert.show('Expansion "' .. choice.text .. '" is empty')
+        end
+        return
+    end
     hs.pasteboard.setContents(expando)
 end
 
