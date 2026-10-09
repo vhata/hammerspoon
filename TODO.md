@@ -59,6 +59,12 @@ Ordinary follow-ups and bugs found during other work live here. Whole-codebase r
 - [CONFIG] `reload-watcher-filter` — **Reload only when config files change, not on writes under `.git/` or worktree directories.** `ReloadConfiguration` reloads on any change under `~/.hammerspoon`, including every git operation, which is why worktrees have to live outside the repository.
   - Source: independent review of PR #1, 2026-10-07
   - Starting point: the pathwatcher callback receives the changed paths; filter to `.lua` files outside `.git/`, either in `init.lua` via `watch_paths` replacement or a small wrapper instead of the vendored spoon.
+  - Related: `reload-mid-checkout`
+- [CONFIG] `reload-mid-checkout` — **Survive a `git pull` that renames or deletes a module, instead of leaving Hammerspoon on a dead config until a manual reload.** `ReloadConfiguration` calls `hs.reload` on the first file event, so a pull can be loaded half-applied; the failed load then stops before `spoon.ReloadConfiguration:start()` at the bottom of `init.lua`, so nothing reloads once the checkout finishes.
+  - Seen pulling `763544a` (#13) into `~/.hammerspoon` at 17:38:33: the reload a second later ran the old `init.lua` against a tree where `hyper.lua` was already deleted and failed with `module 'hyper' not found` at `init.lua:7`.
+  - Source: debugging a live reload failure in a Claude Code session, 2026-10-08
+  - Starting point: debounce the reload (an `hs.timer.delayed` of about a second, restarted on each event) and start the watcher before any `require` in `init.lua`, so a failed load still reloads on the next change. The spoon is vendored, so do it in `init.lua` or a small wrapper; this likely shares the wrapper with `reload-watcher-filter`.
+  - Related: `reload-watcher-filter`
 - [TOOLING] `gitignore-macos` — **Replace the generic C `.gitignore` with one for this repository.** The current file lists compiled-object patterns that never occur here and misses `.DS_Store`.
   - Source: config review in a Claude Code session, 2026-10-07
 - [MODULES] `expanse-get-trailing-newline` — **Strip the trailing newline from the expansion before it goes to the clipboard.** `expanse get` prints with Python's `print()`, so every pasted expansion ends with an extra `\n`.
