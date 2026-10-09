@@ -142,7 +142,7 @@ function obj:init()
         textAlignment = "center",
         frame = {
             x = tostring(10 / self.calw),
-            y = tostring(10 / self.calw),
+            y = tostring(10 / self.calh),
             w = tostring(1 - 20 / self.calw),
             h = tostring((self.calh - 20) / 8 / self.calh)
         }
