@@ -35,7 +35,7 @@ Triage runs when the user asks, when Needs triage holds more than about a dozen 
 
 1. Follow the user's selection. Otherwise take the highest-priority suitable unclaimed entry in **Ready for separate work** of the named queue. If nothing suitable is ready, say so; do not take a triage or proof-of-concept item, and do not switch queues.
 2. Run `bash scripts/workflow/claim-check.sh <slug>`. For a backlog entry it also checks every finding slug. A branch or worktree containing the slug is a provisional claim; an open PR with a marker for it is a claim; a merged PR that resolved it means the entry is stale. Stop and coordinate on any hit.
-3. Create the branch and worktree immediately: `bash scripts/workflow/start-work.sh <queue> <slug> --dir ../.hammerspoon-worktrees` (branch `<queue>/<slug>`; the `--dir` keeps the worktree out of the live config, see [DECISIONS.md](DECISIONS.md)). Recheck claims once after creating it.
+3. Create the branch and worktree immediately: `bash scripts/workflow/start-work.sh <queue> <slug> --dir ~/.hammerspoon-worktrees` (branch `<queue>/<slug>`; the `--dir` keeps the worktree out of the live config, see [DECISIONS.md](DECISIONS.md)). Recheck claims once after creating it.
 4. After the first meaningful commit, open a draft PR with the claim marker. Leave the entry in the queue while work is underway. If no PR can be opened, save the body as `.feral/pr-<slug>.md` (excluded from git), say so where the user will see it, and leave the branch and worktree for the user; the claim is then local only.
 5. Abandoned work: close the draft, remove the worktree and branch, leave the entry untouched.
 
@@ -58,7 +58,7 @@ Directly requested work needs no invented entry and no marker. A review batch cl
 Verify the implementation against the complete entry before marking the PR ready.
 
 - **Full:** remove the entry in the PR; change `Claims` to `Resolves`. Search both queues for the slug and repair `Related:` and `Depends on:` lines that name it.
-- **Partial:** remove the original; add a remainder with a new slug, reassessed stage, priority and area, and `Remaining from: <original-slug>`. Use `Partially resolves` plus `Remaining`. For review work the remainder lists only the still-open findings.
+- **Partial:** remove the original; add a remainder with a new slug, reassessed stage, priority and area, and ``Remaining from: `<original-slug>` `` (backticked; `check-pr-markers.sh` matches only that form). Use `Partially resolves` plus `Remaining`. For review work the remainder lists only the still-open findings.
 - **Parallel subsets of a batch:** first land a queue-only PR that keeps the original slug on one narrowed entry and adds new entries with `Split from: <original-slug>`. Then each subset is claimed separately. Splitting is not resolution.
 - **Rejected or obsolete:** remove with the reason in the PR.
 
