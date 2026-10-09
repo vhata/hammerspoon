@@ -44,6 +44,12 @@ local othermonthcolor = {
 
 function obj:updateCalCanvas()
     local now = os.date("*t")
+    -- The date this drawing treats as today, for checkDate.
+    self.today = {
+        year = now.year,
+        month = now.month,
+        day = now.day
+    }
     local titlestr = os.date("%B %Y", os.time {
         year = self.year,
         month = self.month,
@@ -260,6 +266,29 @@ function obj:resetDate()
     self:updateCalCanvas()
 end
 
+-- How often, in seconds, the open calendar checks whether the date has
+-- changed. A check every minute, rather than one timer set for midnight,
+-- also catches a Mac that slept through midnight, and a clock or time zone
+-- change.
+local DATE_CHECK_INTERVAL = 60
+
+-- Redraw when the date has changed since the last drawing. The calendar
+-- follows today into a new month only if it was showing the month that
+-- contained the previous today; a calendar the user has navigated to any
+-- other month stays on it, and only its today highlight is updated.
+function obj:checkDate()
+    local now = os.date("*t")
+    local seen = self.today
+    if now.year == seen.year and now.month == seen.month and now.day == seen.day then
+        return
+    end
+    if self.year == seen.year and self.month == seen.month then
+        self.year = now.year
+        self.month = now.month
+    end
+    self:updateCalCanvas()
+end
+
 function obj:isShowing()
     return self.canvas:isShowing()
 end
@@ -323,9 +352,20 @@ local function stopKeys(self)
     end
 end
 
+local function stopDateCheck(self)
+    if self.dateTimer then
+        self.dateTimer:stop()
+        self.dateTimer = nil
+    end
+end
+
+-- Opens on the current month, wherever it was left when last closed.
 function obj:show()
     stopKeys(self)
+    stopDateCheck(self)
     self.dismissedAt = nil
+    self.year = tonumber(os.date("%Y"))
+    self.month = tonumber(os.date("%m"))
     local screen = hs.screen.mainScreen():frame()
     self.canvas:topLeft({
         x = screen.x + (screen.w - self.calw) / 2,
@@ -334,12 +374,17 @@ function obj:show()
     self:updateCalCanvas()
     self.canvas:show()
     startKeys(self)
+    -- Held on self so the garbage collector cannot stop it.
+    self.dateTimer = hs.timer.doEvery(DATE_CHECK_INTERVAL, function()
+        self:checkDate()
+    end)
     return self
 end
 
 function obj:hide()
     -- keys first, if anything goes wrong we don't want them stuck
     stopKeys(self)
+    stopDateCheck(self)
     self.canvas:hide()
 end
 
