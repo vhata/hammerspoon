@@ -26,6 +26,8 @@ local function callback(choice)
     end
     -- "--" stops expanse reading a name that starts with "-" as an option
     local expando = call_expanse({'get', '--', choice.text})
+    -- expanse prints the expansion with Python's print(), which adds a newline
+    expando = expando:gsub("\r?\n$", "", 1)
     hs.pasteboard.setContents(expando)
 end
 
