@@ -50,7 +50,7 @@ Ordinary follow-ups and bugs found during other work live here. Whole-codebase r
 
 ### Unprioritized
 
-- [CONFIG] `drop-reloadconfiguration-spoon` — **Delete the vendored `ReloadConfiguration` spoon now that nothing loads it.** `reload.lua` replaced it as the config watcher; the directory under `Spoons/` is dead weight and `AGENTS.md` still lists it among the vendored spoons.
+- [SPOONS] `drop-reloadconfiguration-spoon` — **Delete the vendored `ReloadConfiguration` spoon now that nothing loads it.** `reload.lua` replaced it as the config watcher; the directory under `Spoons/` is dead weight, and `AGENTS.md` and `ARCHITECTURE.md` still list it among the vendored spoons.
   - Source: writing `reload-watcher-filter`, 2026-10-09
   - Related: `remove-dead-code`
 - [CONFIG] `remove-dead-code` — **Remove unused code and variables.** `spoon.AClock:init()` in `init.lua:10` repeats what `hs.loadSpoon` already does; the `expanse` and `spotify` locals in `init.lua` are never read; `logger` in FloatCalendar is unused; `Spoons/Calendar.spoon` is tracked but never loaded.
