@@ -65,8 +65,6 @@ Ordinary follow-ups and bugs found during other work live here. Whole-codebase r
   - Source: debugging a live reload failure in a Claude Code session, 2026-10-08
   - Starting point: debounce the reload (an `hs.timer.delayed` of about a second, restarted on each event) and start the watcher before any `require` in `init.lua`, so a failed load still reloads on the next change. The spoon is vendored, so do it in `init.lua` or a small wrapper; this likely shares the wrapper with `reload-watcher-filter`.
   - Related: `reload-watcher-filter`
-- [TOOLING] `gitignore-macos` — **Replace the generic C `.gitignore` with one for this repository.** The current file lists compiled-object patterns that never occur here and misses `.DS_Store`.
-  - Source: config review in a Claude Code session, 2026-10-07
 - [MODULES] `expanse-get-trailing-newline` — **Strip the trailing newline from the expansion before it goes to the clipboard.** `expanse get` prints with Python's `print()`, so every pasted expansion ends with an extra `\n`.
   - Source: fixing `expanse-shell-quoting`, PR #5, 2026-10-08
   - Starting point: strip one trailing `\r?\n` in `callback` in `expanse.lua`; expansions that end in a deliberate newline would need `expanse` itself to change.
