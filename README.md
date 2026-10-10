@@ -15,7 +15,7 @@ For use with [Hammerspoon](https://www.hammerspoon.org/). Clone to `~/.hammerspo
 | Cmd+Alt+E | Text-expansion picker (needs `~/bin/expanse`) |
 | F14 or keypad / | Spotify now-playing notification |
 
-The config reloads automatically when any file under `~/.hammerspoon` changes.
+The config reloads automatically a second after the last change to a `.lua` or `.json` file under `~/.hammerspoon`. Changes under `.git/` or other hidden directories, and inside nested checkouts such as worktrees, are ignored.
 
 ### Working on it
 
