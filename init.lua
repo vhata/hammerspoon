@@ -16,8 +16,6 @@ local spotify = require("spotify")
 local cheatsheet = require("cheatsheet")
 local leader = require("leader")
 
-spoon.AClock:init()
-
 local function app(key, name)
     return { key = key, label = name, fn = function() hs.application.launchOrFocus(name) end }
 end
