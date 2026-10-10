@@ -10,8 +10,6 @@ obj.license = "MIT - https://opensource.org/licenses/MIT"
 obj.calw = 260
 obj.calh = 184
 
-local logger = hs.logger.new("FloatCalendar", 'info')
-
 local caltodaycolor = {
     red = 1,
     blue = 1,
