@@ -24,7 +24,6 @@ Ordinary follow-ups and bugs found during other work live here. Whole-codebase r
 - [TOOLING] `adopt-luacheck` — **Add luacheck to the lint gate with a `.luacheckrc` that knows the `hs` and `spoon` globals.** `luac -p` only proves files parse; luacheck would catch accidental globals and unused locals, both of which have already been fixed by hand in this repository's history.
   - Source: config review in a Claude Code session, 2026-10-07
   - Starting point: decide whether vendored spoons are excluded (AClock defines a global `getframe`), then clear the remaining warnings or record them as baseline; install via `luarocks` or apt `lua-check` in CI.
-  - Related: `remove-dead-code`
 - [MODULES] `spotify-artwork-timeout` — **Send the now-playing notification without art if the artwork fetch is slow.** Since the fetch became asynchronous, the notification waits for it, which on a slow or dead link can be as long as the system URL timeout.
   - Source: fixing `spotify-async-artwork`, PR #4, 2026-10-08
   - Starting point: an `hs.timer.doAfter` of a few seconds that sends without art, with the image callback sending only if the timer has not fired; decide whether a late image should replace the notification.
@@ -52,10 +51,3 @@ Ordinary follow-ups and bugs found during other work live here. Whole-codebase r
 ### P3 Low
 
 ### Unprioritized
-
-- [SPOONS] `drop-reloadconfiguration-spoon` — **Delete the vendored `ReloadConfiguration` spoon now that nothing loads it.** `reload.lua` replaced it as the config watcher; the directory under `Spoons/` is dead weight, and `AGENTS.md` and `ARCHITECTURE.md` still list it among the vendored spoons.
-  - Source: writing `reload-watcher-filter`, 2026-10-09
-  - Related: `remove-dead-code`
-- [CONFIG] `remove-dead-code` — **Remove unused code and variables.** `spoon.AClock:init()` in `init.lua:10` repeats what `hs.loadSpoon` already does; the `expanse` and `spotify` locals in `init.lua` are never read; `logger` in FloatCalendar is unused; `Spoons/Calendar.spoon` is tracked but never loaded.
-  - Source: config review in a Claude Code session, 2026-10-07
-  - Related: `adopt-luacheck`
