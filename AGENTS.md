@@ -15,7 +15,7 @@ Personal [Hammerspoon](https://www.hammerspoon.org/) configuration for one macOS
 - Run `bash scripts/check.sh` before opening or updating a PR; `bash scripts/setup.sh` installs the pre-commit hook that runs the same lint gate. These checks only prove the Lua parses. Behaviour can only be checked in the running Hammerspoon app, so every PR states which behaviour the user needs to try after merging, and agents never claim a behaviour change was verified unless they ran it.
 - Linear history: rebase, never merge `main` into a branch; `--force-with-lease` on PR branches only. The user merges. There is no standing merge delegation.
 - Commit regularly, one logical change per commit, in the style of the existing log (short, lowercase, imperative). No attribution trailers. The repository's git `user.email` is the user's personal address and is already set; sub-agents never change `git config`.
-- Vendored spoons (`AClock`, `Emojis`, `ReloadConfiguration`) are upstream code. Edit them only when the entry being worked says so; `FloatCalendar` is the user's own.
+- Vendored spoons (`AClock`, `Emojis`) are upstream code. Edit them only when the entry being worked says so; `FloatCalendar` is the user's own.
 - Update documentation in the same PR when a change makes it inaccurate. Each rule has one authoritative home; link to it rather than restating it.
 
 ## In force
