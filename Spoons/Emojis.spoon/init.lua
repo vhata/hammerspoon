@@ -26,13 +26,8 @@ obj.hotkey = nil
 
 dofile(obj.spoonPath .. "/table.lua")
 
-local wf = hs.window.filter.defaultCurrentSpace
-
+-- Local patch: no window filter here; see docs/DECISIONS.md (2026-10-09).
 function obj.callback(choice)
-    local lastFocused = wf:getWindows(wf.sortByFocusedLast)
-    if #lastFocused > 0 then
-        lastFocused[1]:focus()
-    end
     if not choice then
         return
     end

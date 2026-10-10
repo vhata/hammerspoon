@@ -2,6 +2,12 @@
 
 Non-obvious choices and their trade-offs, dated, newest section first. Read the relevant entry before changing a mechanism that looks odd. Choices made autonomously under a delegation are recorded here for the user to review; an entry is a record, not a claim that the capability is complete.
 
+## 2026-10-09
+
+| Decision | Reason and trade-off |
+| --- | --- |
+| The vendored Emojis spoon carries a local patch: it no longer refocuses the previous window through `hs.window.filter.defaultCurrentSpace`. | That filter is Spaces-aware, so `hs.window.filter` keeps a watcher on every running app and re-queries every app's windows on each Space change, on the main thread, from the moment the spoon loads. Since the leader tap began watching `keyDown`, a stall there delays typing too. `hs.chooser`'s default global callback already saves the frontmost window when a chooser opens and refocuses it in `hide`, before the completion callback runs, so the spoon's refocus was redundant. Cost: an upstream update of the spoon would bring the filter back; reapply the patch. |
+
 ## 2026-10-08
 
 | Decision | Reason and trade-off |

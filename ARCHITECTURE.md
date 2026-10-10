@@ -12,7 +12,7 @@ What the configuration is now and the invariants reviews check.
 - `expanse.lua`: Cmd+Alt+E chooser over the external `~/bin/expanse` text-expansion tool; the chosen expansion goes to the clipboard.
 - `spotify.lua`: F14 or keypad `/` shows a now-playing notification with album art.
 - `Spoons/FloatCalendar.spoon`: the user's own month calendar overlay.
-- `Spoons/AClock.spoon`, `Spoons/Calendar.spoon`, `Spoons/Emojis.spoon`, `Spoons/ReloadConfiguration.spoon`: vendored upstream spoons. `Calendar` is present but not loaded.
+- `Spoons/AClock.spoon`, `Spoons/Calendar.spoon`, `Spoons/Emojis.spoon`, `Spoons/ReloadConfiguration.spoon`: vendored upstream spoons. `Calendar` is present but not loaded. `Emojis` carries a local patch that removes its window filter (see `docs/DECISIONS.md`).
 
 ## Shared interfaces
 
@@ -25,6 +25,7 @@ What the configuration is now and the invariants reviews check.
 - Module state lives in `local`s. Accidental globals leak across reloads and between modules.
 - Anything that must keep running or stay usable (event taps, watchers, timers, modals, choosers, canvases, webviews) is held by a reference that outlives the function that created it, or Lua's garbage collector stops it.
 - Callbacks run on Hammerspoon's main thread. A blocking call (`hs.execute`, synchronous URL fetch, slow AppleScript) freezes every hotkey until it returns.
+- No Spaces-aware `hs.window.filter` (`setCurrentSpace`, `defaultCurrentSpace`, a `currentSpace` filter field). One makes every Space change re-query every app's windows on the main thread, which the always-on `keyDown` leader tap turns into delayed typing.
 - Event taps that return `true` swallow the event system-wide; they must be narrow and removed when their overlay closes.
 - Transient UI takes global keys only while it is visible, and only the exact combination it means (Escape without modifiers, not every keycode 53).
 
