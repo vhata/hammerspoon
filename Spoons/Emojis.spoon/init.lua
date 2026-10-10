@@ -26,10 +26,7 @@ obj.hotkey = nil
 
 dofile(obj.spoonPath .. "/table.lua")
 
--- Local change: upstream refocused the previous window through
--- hs.window.filter.defaultCurrentSpace, which keeps a watcher on every app and
--- re-queries all their windows on every Space change. hs.chooser's default
--- global callback already restores focus before the completion callback runs.
+-- Local patch: no window filter here; see docs/DECISIONS.md (2026-10-09).
 function obj.callback(choice)
     if not choice then
         return
