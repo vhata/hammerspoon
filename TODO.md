@@ -14,6 +14,9 @@ Ordinary follow-ups and bugs found during other work live here. Whole-codebase r
 
 ### Unprioritized
 
+- [SPOONS] `aclock-reinit-watcher-leak` — **Stop AClock starting another screen watcher each time a setting changes after load.** The vendored spoon re-runs `init()` on every setting assignment, and each run starts a new `hs.screen.watcher` and drops the old reference; nothing in this config sets AClock options after loading today, so it only matters if `init.lua` starts customising the clock.
+  - Source: writing `remove-dead-code`, 2026-10-10
+  - Starting point: `Spoons/AClock.spoon/init.lua` lines 22-27 and the watcher setup in `obj:init()`; vendored, so either a local patch recorded in `docs/DECISIONS.md` or set options before `hs.loadSpoon` returns.
 - [SPOONS] `floatcalendar-take-focus` — **Decide whether the open FloatCalendar should take keyboard focus.** Since `floatcalendar-global-hotkeys` it takes its keys through an event tap and closes on any other key or click; a focused window would instead keep keys out of other apps without closing, and would keep working under secure input, which taps cannot see through.
   - Source: independent review of the `floatcalendar-global-hotkeys` PR, 2026-10-09
   - Starting point: `hs.canvas` cannot take focus, so this means rebuilding the calendar as an `hs.webview` (or an `hs.webview` host for the canvas); weigh that against the current tap.
