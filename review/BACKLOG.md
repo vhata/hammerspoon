@@ -12,7 +12,6 @@ Only work promoted from whole-codebase reviews belongs here. Every entry is read
   - Findings: `expanse-chooser-gc`, `expanse-truncate-utf8`
   - Source: [review/2026-10-09-0859-full.md](2026-10-09-0859-full.md), 2026-10-09
   - Starting point: one module-level `hs.chooser` in `expanse.lua` (as `Spoons/Emojis.spoon` holds `obj.chooser`), `:choices()` refreshed before each `:show()`; cut the subtext with `utf8.offset`.
-  - Related: `expanse-error-feedback`
 - [TOOLING] `workflow-script-silent-exits` — **Make `review-due.sh` and `check-pr-markers.sh` report instead of exiting 1 silently when a `grep` finds nothing.** Under `set -euo pipefail` a no-match `grep` in a substitution or pipeline ends the script; `review-due.sh` hits this on the first run after the 2026-10-09 review when no source has changed.
   - Findings: `review-due-silent-exit-no-churn`, `pr-markers-silent-exit-remaining-from`
   - Source: [review/2026-10-09-0859-full.md](2026-10-09-0859-full.md), 2026-10-09
