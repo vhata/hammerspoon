@@ -14,6 +14,9 @@ Ordinary follow-ups and bugs found during other work live here. Whole-codebase r
 
 ### Unprioritized
 
+- [SPOONS] `aclock-reinit-watcher-leak` — **Stop AClock starting another screen watcher each time a setting changes after load.** The vendored spoon re-runs `init()` on every setting assignment, and each run starts a new `hs.screen.watcher` and drops the old reference; nothing in this config sets AClock options after loading today, so it only matters if `init.lua` starts customising the clock.
+  - Source: writing `remove-dead-code`, 2026-10-10
+  - Starting point: `Spoons/AClock.spoon/init.lua` lines 22-27 and the watcher setup in `obj:init()`; vendored, so either a local patch recorded in `docs/DECISIONS.md` or `require("AClock")`, set its fields, then call `hs.loadSpoon("AClock")`, which reuses the loaded module and runs `init()` once.
 - [SPOONS] `floatcalendar-take-focus` — **Decide whether the open FloatCalendar should take keyboard focus.** Since `floatcalendar-global-hotkeys` it takes its keys through an event tap and closes on any other key or click; a focused window would instead keep keys out of other apps without closing, and would keep working under secure input, which taps cannot see through.
   - Source: independent review of the `floatcalendar-global-hotkeys` PR, 2026-10-09
   - Starting point: `hs.canvas` cannot take focus, so this means rebuilding the calendar as an `hs.webview` (or an `hs.webview` host for the canvas); weigh that against the current tap.
@@ -24,7 +27,6 @@ Ordinary follow-ups and bugs found during other work live here. Whole-codebase r
 - [TOOLING] `adopt-luacheck` — **Add luacheck to the lint gate with a `.luacheckrc` that knows the `hs` and `spoon` globals.** `luac -p` only proves files parse; luacheck would catch accidental globals and unused locals, both of which have already been fixed by hand in this repository's history.
   - Source: config review in a Claude Code session, 2026-10-07
   - Starting point: decide whether vendored spoons are excluded (AClock defines a global `getframe`), then clear the remaining warnings or record them as baseline; install via `luarocks` or apt `lua-check` in CI.
-  - Related: `remove-dead-code`
 - [MODULES] `spotify-artwork-timeout` — **Send the now-playing notification without art if the artwork fetch is slow.** Since the fetch became asynchronous, the notification waits for it, which on a slow or dead link can be as long as the system URL timeout.
   - Source: fixing `spotify-async-artwork`, PR #4, 2026-10-08
   - Starting point: an `hs.timer.doAfter` of a few seconds that sends without art, with the image callback sending only if the timer has not fired; decide whether a late image should replace the notification.
@@ -52,10 +54,3 @@ Ordinary follow-ups and bugs found during other work live here. Whole-codebase r
 ### P3 Low
 
 ### Unprioritized
-
-- [SPOONS] `drop-reloadconfiguration-spoon` — **Delete the vendored `ReloadConfiguration` spoon now that nothing loads it.** `reload.lua` replaced it as the config watcher; the directory under `Spoons/` is dead weight, and `AGENTS.md` and `ARCHITECTURE.md` still list it among the vendored spoons.
-  - Source: writing `reload-watcher-filter`, 2026-10-09
-  - Related: `remove-dead-code`
-- [CONFIG] `remove-dead-code` — **Remove unused code and variables.** `spoon.AClock:init()` in `init.lua:10` repeats what `hs.loadSpoon` already does; the `expanse` and `spotify` locals in `init.lua` are never read; `logger` in FloatCalendar is unused; `Spoons/Calendar.spoon` is tracked but never loaded.
-  - Source: config review in a Claude Code session, 2026-10-07
-  - Related: `adopt-luacheck`
