@@ -11,8 +11,8 @@ end
 hs.loadSpoon("AClock")
 hs.loadSpoon("Emojis")
 hs.loadSpoon("FloatCalendar")
-local expanse = require("expanse")
-local spotify = require("spotify")
+require("expanse")
+require("spotify")
 local cheatsheet = require("cheatsheet")
 local leader = require("leader")
 
