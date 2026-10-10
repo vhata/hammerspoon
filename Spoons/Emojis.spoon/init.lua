@@ -26,13 +26,11 @@ obj.hotkey = nil
 
 dofile(obj.spoonPath .. "/table.lua")
 
-local wf = hs.window.filter.defaultCurrentSpace
-
+-- Local change: upstream refocused the previous window through
+-- hs.window.filter.defaultCurrentSpace, which keeps a watcher on every app and
+-- re-queries all their windows on every Space change. hs.chooser's default
+-- global callback already restores focus before the completion callback runs.
 function obj.callback(choice)
-    local lastFocused = wf:getWindows(wf.sortByFocusedLast)
-    if #lastFocused > 0 then
-        lastFocused[1]:focus()
-    end
     if not choice then
         return
     end
