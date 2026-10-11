@@ -13,7 +13,8 @@ This project is run with docket. Read [docket/CONTRACT.md](docket/CONTRACT.md) b
 - Optional pieces in force: branch and PR per unit of work, claim checks and markers, independent review, the check entrypoint, the pre-commit hook, CI on PRs and `main`, the review ledger. Deferred: scheduled validation of `main` (nothing expensive to run), stacked PRs.
 - Environment: **the main checkout at `~/.hammerspoon` is the live config.** Hammerspoon loads whatever is checked out there and reloads when a `.lua` or `.json` file under it changes (see `reload.lua`). Keep it on `main`, never switch its branch, and never create worktrees inside it. Worktrees live in `~/.hammerspoon-worktrees/`: always pass `--dir ~/.hammerspoon-worktrees` to `docket/scripts/start-work.sh`. See [`docs/DECISIONS.md`](docs/DECISIONS.md).
 - Verification: the gates only prove the Lua parses. Behaviour can only be checked in the running Hammerspoon app, so every PR states which behaviour the user needs to try after merging, and agents never claim a behaviour change was verified unless they ran it.
-- Commits: short, lowercase, imperative subjects in the style of the existing log; no attribution trailers. The repository's git `user.email` is the user's personal address and is already set.
+- Commits and PRs: short, lowercase, imperative subjects in the style of the existing log; no attribution trailers. PR bodies follow `.github/pull_request_template.md`. The repository's git `user.email` is the user's personal address and is already set.
+- Review snapshots: open the review PR from a `task/` branch. A `review/<slug>` branch must claim a backlog slug, which a review does not have.
 - Vendored spoons: `AClock` and `Emojis` are upstream code; edit them only when the entry being worked says so. `FloatCalendar` is the user's own.
 <!-- docket:end -->
 

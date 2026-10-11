@@ -8,6 +8,7 @@ Read when changing code or preparing a PR. This document describes the gates as 
 - Nothing blocks Hammerspoon's main thread long enough to notice; a stuck callback freezes every binding.
 - A reload never fails halfway. A Lua error in any module stops the rest of `init.lua` from loading.
 - Behaviour is verified by hand in the running app. No headless Hammerspoon exists, so the mechanical gates prove only that the code parses and the records are consistent.
+- Review focus: blocking calls on Hammerspoon's main thread (`hs.execute`, synchronous network fetches, AppleScript), event taps and global hotkeys that swallow or misfire on ordinary input, accidental globals, objects that must stay referenced to avoid garbage collection (watchers, taps, timers), shell commands built from unquoted input, and screen geometry that assumes a single display at the origin.
 
 ## Gates
 
@@ -45,7 +46,7 @@ Applied on 2026-10-07. A pull request is required with zero approving reviews (i
 
 What the vendored review guide ([`docket/CODE_REVIEW_GUIDE.md`](../docket/CODE_REVIEW_GUIDE.md)) reads from this project.
 
-- Focus areas: blocking calls on Hammerspoon's main thread (`hs.execute`, synchronous network fetches, AppleScript), event taps and global hotkeys that swallow or misfire on ordinary input, accidental globals, objects that must stay referenced to avoid garbage collection (watchers, taps, timers), shell commands built from unquoted input, and screen geometry that assumes a single display at the origin.
+- Focus areas: the review-focus list under [What quality means here](#what-quality-means-here).
 - Baseline commands beyond `bash scripts/check.sh`: none. No headless runtime exists; behaviour is checked by reloading the live config in Hammerspoon and reading its console.
 - Drift checks for an incremental review: hotkeys and leader bindings documented in `README.md` against `init.lua` and the modules; this document against the hook and CI; `bash ~/.claude/skills/docket/install.sh --check` for drift in `docket/`.
 
