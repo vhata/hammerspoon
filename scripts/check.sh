@@ -15,6 +15,6 @@ run() {
 }
 
 run lint bash scripts/lint.sh
-run queues bash scripts/workflow/check-queues.sh --strict
-run links bash scripts/workflow/check-links.sh
+run queues bash docket/scripts/check-queues.sh --strict
+run links bash docket/scripts/check-links.sh
 echo "check: all gates passed"

@@ -11,7 +11,7 @@ Every PR that changes code is reviewed by an agent that did not write it, includ
 Independent review by <agent> at <commit>: <verdict>. Verified: <claims and how>. Findings: <n> (<fixed in <commit> | disposition>). Not checked: <gaps>.
 ```
 
-Focus areas for this project: blocking calls on Hammerspoon's main thread (`hs.execute`, synchronous network fetches, AppleScript), event taps and global hotkeys that swallow or misfire on ordinary input, accidental globals, objects that must stay referenced to avoid garbage collection (watchers, taps, timers), shell commands built from unquoted input, and screen geometry that assumes a single display at the origin.
+The correctness boundaries the reviewer concentrates on are listed under [What quality means here](../docs/QUALITY.md#what-quality-means-here) in `docs/QUALITY.md`.
 
 ## Ledger
 
@@ -30,7 +30,7 @@ Focus areas for this project: blocking calls on Hammerspoon's main thread (`hs.e
 | Reviewed commit | `<sha>` on main |
 | Previous review | <file> at `<sha>` / None |
 | Reviewers | <coordinator; independent agents and the areas each covered> |
-| Baseline | `bash scripts/check.sh`: <result>; <other baseline commands>: <results> |
+| Baseline | `bash scripts/check.sh`: <result>; <each baseline command from the Review inputs in `docs/QUALITY.md`>: <result> |
 
 ## Summary
 ## Invariants
@@ -63,12 +63,7 @@ One finding is one independently fixable, verifiable problem; repeated instances
 
 ## Baseline checks
 
-Run at the reviewed commit and record exact results in the header:
-
-```bash
-bash scripts/check.sh
-# No headless runtime exists: behaviour is checked by reloading the live config in Hammerspoon and reading its console.
-```
+Run `bash scripts/check.sh` and the baseline commands listed under [Review inputs](../docs/QUALITY.md#review-inputs) in `docs/QUALITY.md` at the reviewed commit, and record exact results in the header.
 
 A check that passed at the previous review and fails now is a finding.
 
@@ -79,7 +74,7 @@ A check that passed at the previous review and fails now is a finding.
 3. Reproduce serious bugs (Verified); the rest stay Read.
 4. Review-close triage (below).
 5. Write the snapshot, amend the invariants, add the index row.
-6. Open the review as its own PR from a `task/` branch (a `review/<slug>` branch must claim a backlog slug, which a review does not have). It carries no code fixes; small factual documentation fixes may be separate commits on the review branch, recorded as Fixed.
+6. Open the review as its own PR. It carries no code fixes; small factual documentation fixes may be separate commits on the review branch, recorded as Fixed.
 
 ## Incremental review
 
@@ -88,11 +83,11 @@ Base is the newest snapshot's reviewed commit.
 1. Baseline, recorded.
 2. Re-check every standing finding by reading current code. For merged PRs carrying `Resolves review finding: <slug>`, inspect the code at the new commit, record the new location, rerun the original reproduction (Verified) or repeat the inspection (Read). Unconfirmed closures stay Open or Moved with their backlog mapping restored.
 3. Read the whole delta against the invariants and standing findings; a new copy of a listed duplication is a finding.
-4. Mechanical checks: `bash scripts/workflow/check-links.sh`, `bash scripts/workflow/check-queues.sh --strict`, counts of lint suppressions and in-code TODO/FIXME markers, largest files, stray tracked files, and this project's drift checks: hotkeys and leader bindings documented in README.md against `init.lua` and the modules; QUALITY.md against hooks and CI. Compare every number with the previous snapshot.
+4. Mechanical checks: `bash docket/scripts/check-links.sh`, `bash docket/scripts/check-queues.sh --strict`, counts of lint suppressions and in-code TODO/FIXME markers, largest files, stray tracked files, and the drift checks listed under [Review inputs](../docs/QUALITY.md#review-inputs) in `docs/QUALITY.md`. Compare every number with the previous snapshot.
 5. Re-read files touched by most PRs in the delta.
 6. Review-close triage, snapshot, index row, review PR.
 
-A full review resets the baseline after a large refactor, when a hot file was rewritten, when most findings are closed and a clean baseline is wanted, when two consecutive incremental reviews each added many findings, or when `bash scripts/workflow/review-due.sh` reports source churn above a third of the codebase.
+A full review resets the baseline after a large refactor, when a hot file was rewritten, when most findings are closed and a clean baseline is wanted, when two consecutive incremental reviews each added many findings, or when `bash docket/scripts/review-due.sh` reports source churn above a third of the codebase.
 
 ## Review-close triage
 
