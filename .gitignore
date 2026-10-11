@@ -1,6 +1,5 @@
-# Agent workflow: unattended-run audit log and prepared PR bodies
-AUDIT.md
-.feral/
+# Agent workflow: local state (unattended-run audit log, prepared PR bodies)
+.docket/
 
 # macOS
 .DS_Store
