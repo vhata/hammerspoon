@@ -7,7 +7,7 @@ Read when changing code or preparing a PR. This document describes the gates as 
 - Hotkeys and overlays do what they say, every time, without firing during ordinary typing.
 - Nothing blocks Hammerspoon's main thread long enough to notice; a stuck callback freezes every binding.
 - A reload never fails halfway. A Lua error in any module stops the rest of `init.lua` from loading.
-- Behaviour is verified by hand in the running app. No headless Hammerspoon exists, so the mechanical gates prove only that the code parses and the records are consistent.
+- Behaviour is verified by hand in the running app. No headless Hammerspoon exists, so the mechanical gates prove only that the code parses and passes luacheck, and that the records are consistent.
 - Review focus: blocking calls on Hammerspoon's main thread (`hs.execute`, synchronous network fetches, AppleScript), event taps and global hotkeys that swallow or misfire on ordinary input, accidental globals, objects that must stay referenced to avoid garbage collection (watchers, taps, timers), shell commands built from unquoted input, and screen geometry that assumes a single display at the origin.
 
 ## Gates
@@ -17,12 +17,13 @@ Each check is a standalone script in `scripts/` (this project's gates) or `docke
 | Script | Runs | Pre-commit | CI on PR | CI on main |
 | --- | --- | --- | --- | --- |
 | `scripts/lint.sh` | `luac -p` on every tracked `.lua` file; fails if none are found | yes | yes | yes |
+| `scripts/luacheck.sh` | luacheck on every tracked `.lua` file with `.luacheckrc`: Lua 5.4, `hs` and `spoon` as read-only globals, the vendored `AClock` and `Emojis` spoons excluded; fails on any warning, if luacheck is missing or if no files are found | | yes | yes |
 | `docket/scripts/ci.sh` | queue hygiene, relative Markdown links and, on pull requests, PR markers against the queues | | yes | yes |
-| `scripts/check.sh` | lint, then `docket/scripts/check-queues.sh --strict` and `docket/scripts/check-links.sh`, in order | | | |
+| `scripts/check.sh` | lint, luacheck, then `docket/scripts/check-queues.sh --strict` and `docket/scripts/check-links.sh`, in order | | | |
 
-The hook lives in `.githooks/pre-commit` and is installed by `bash scripts/setup.sh` (`core.hooksPath`). It checks the working tree rather than the staged content, so a partially staged file is linted as it is on disk. It checks only and never rewrites files, and takes well under a second. Bypassing it is for a broken toolchain only; state the bypass and the equivalent checks in the PR.
+The hook lives in `.githooks/pre-commit` and is installed by `bash scripts/setup.sh` (`core.hooksPath`). It runs `scripts/lint.sh` only. It checks the working tree rather than the staged content, so a partially staged file is linted as it is on disk. It checks only and never rewrites files, and takes well under a second. Bypassing it is for a broken toolchain only; state the bypass and the equivalent checks in the PR.
 
-Toolchain: CI installs Ubuntu's `lua5.4`, matching the Lua version Hammerspoon embeds. Locally `scripts/lint.sh` prefers `luac5.4` and falls back to whatever `luac` is installed (Homebrew currently ships 5.5), so a local pass on a newer Lua is not proof of a 5.4 pass; CI is.
+Toolchain: CI installs Ubuntu's `lua5.4`, matching the Lua version Hammerspoon embeds. Locally `scripts/lint.sh` prefers `luac5.4` and falls back to whatever `luac` is installed (Homebrew currently ships 5.5), so a local pass on a newer Lua is not proof of a 5.4 pass; CI is. luacheck comes from Ubuntu's `lua-check` package in CI (1.1.2 on 24.04) and from `brew install luacheck` locally (1.2.0); it uses its own parser and checks against the Lua 5.4 standard library whichever Lua runs it. A warning that is deliberate gets an inline `-- luacheck: ignore <code>/<name>` or a `.luacheckrc` entry, each with the reason beside it.
 
 ## Test policy
 
@@ -32,7 +33,7 @@ Toolchain: CI installs Ubuntu's `lua5.4`, matching the Lua version Hammerspoon e
 
 ## CI
 
-`.github/workflows/ci.yml` runs on pull requests and on pushes to `main`. Jobs: `check` (lint) and `Queue and PR hygiene` (one call to `docket/scripts/ci.sh`: queues, links, PR markers on pull requests). Superseded runs are cancelled on PR branches only, never on `main`.
+`.github/workflows/ci.yml` runs on pull requests and on pushes to `main`. Jobs: `check` (lint, then luacheck) and `Queue and PR hygiene` (one call to `docket/scripts/ci.sh`: queues, links, PR markers on pull requests). Superseded runs are cancelled on PR branches only, never on `main`.
 
 ## Scheduled validation of main
 
