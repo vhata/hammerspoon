@@ -34,11 +34,6 @@ Ordinary follow-ups and bugs found during other work live here. Whole-codebase r
 
 ### P2 Normal
 
-- [TOOLING] `adopt-luacheck` — **Add luacheck to the lint gate with a `.luacheckrc` that knows the `hs` and `spoon` globals.** `luac -p` only proves files parse; luacheck would catch accidental globals and unused locals, both of which have already been fixed by hand in this repository's history.
-  - Source: config review in a Claude Code session, 2026-10-07
-  - Decided in triage, 2026-10-12: exclude the vendored `Spoons/AClock.spoon` and `Spoons/Emojis.spoon` (AClock defines a global `getframe`).
-  - Starting point: clear the remaining warnings or record them as baseline; install via `luarocks` or apt `lua-check` in CI.
-
 ### P3 Low
 
 ### Unprioritized
