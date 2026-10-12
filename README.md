@@ -19,6 +19,6 @@ The config reloads automatically a second after the last change to a `.lua` or `
 
 ### Working on it
 
-Run `bash scripts/setup.sh` once to install the pre-commit hook, and `bash scripts/check.sh` before opening a PR. Agents (and people) working here follow [AGENTS.md](AGENTS.md). Deferred work is in [TODO.md](TODO.md).
+Run `bash scripts/setup.sh` once to install the pre-commit hook, and `bash scripts/check.sh` before opening a PR; it needs `luac` (Lua 5.4) and `luacheck` (`brew install lua luacheck`). Agents (and people) working here follow [AGENTS.md](AGENTS.md). Deferred work is in [TODO.md](TODO.md).
 
 The repository workflow (agent contract, queues, review ledger, CI) was set up with Claude Code.

@@ -15,8 +15,9 @@ M.delay = 1
 local EXTENSIONS = { lua = true, json = true }
 
 -- Watcher and timer live at module level so the garbage collector, which
--- would stop them, cannot reach them while the module is loaded.
-local watcher, timer
+-- would stop them, cannot reach them while the module is loaded. The
+-- watcher is assigned and never read; holding it is the point.
+local watcher, timer -- luacheck: ignore 231/watcher
 
 -- Returns path relative to the first root it lies under ("" for a root
 -- itself) and that root, or nil if it is under none of them.
