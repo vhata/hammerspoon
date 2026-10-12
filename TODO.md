@@ -41,9 +41,4 @@ Ordinary follow-ups and bugs found during other work live here. Whole-codebase r
 
 ### P3 Low
 
-- [MODULES] `spotify-artwork-timeout` — **Send the now-playing notification without art if the artwork fetch is slow.** Since the fetch became asynchronous, the notification waits for it, which on a slow or dead link can be as long as the system URL timeout.
-  - Source: fixing `spotify-async-artwork`, PR #4, 2026-10-08
-  - Decided in triage, 2026-10-12: a late image does not replace or resend the notification.
-  - Starting point: an `hs.timer.doAfter` of a few seconds that sends without art, with the image callback sending only if the timer has not fired.
-
 ### Unprioritized
