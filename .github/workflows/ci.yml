@@ -1,6 +1,7 @@
 # Merge-blocking checks. Every job calls a script in scripts/ or
-# docket/scripts/, so `bash scripts/lint.sh` reproduces the check job locally
-# and `bash docket/scripts/ci.sh` the hygiene job. See docs/QUALITY.md.
+# docket/scripts/, so `bash scripts/lint.sh` and `bash scripts/luacheck.sh`
+# reproduce the check job locally and `bash docket/scripts/ci.sh` the hygiene
+# job. See docs/QUALITY.md.
 name: CI
 
 on:
@@ -30,8 +31,9 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - run: sudo apt-get update -qq && sudo apt-get install -y -qq lua5.4
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq lua5.4 lua-check
       - run: bash scripts/lint.sh
+      - run: bash scripts/luacheck.sh
 
   workflow:
     name: Queue and PR hygiene

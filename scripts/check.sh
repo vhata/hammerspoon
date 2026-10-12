@@ -15,6 +15,7 @@ run() {
 }
 
 run lint bash scripts/lint.sh
+run luacheck bash scripts/luacheck.sh
 run queues bash docket/scripts/check-queues.sh --strict
 run links bash docket/scripts/check-links.sh
 echo "check: all gates passed"
