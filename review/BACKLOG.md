@@ -19,7 +19,7 @@ Only work promoted from whole-codebase reviews belongs here. Every entry is read
   - Findings: `leader-tap-ignores-mouse`, `leader-unbound-key-stays-live`
   - Source: [review/2026-10-09-0859-full.md](2026-10-09-0859-full.md), 2026-10-09
   - Starting point: add mouse-down and scroll events to `M.tap` in `leader.lua` and reset the tap state on them; record each modal's bound keys in `build` and call `deactivate()` from the tap's `keyDown` branch when the active layer does not bind the key.
-- [TOOLING] `workflow-script-hygiene` — **Make `check-links.sh` fail when it has nothing real to check, and fix `start-work.sh`'s usage output.** Both are small defects in the vendored workflow scripts; the other four findings this entry once covered were fixed when the scripts were vendored from the docket skill.
+- [TOOLING] `workflow-script-hygiene` — **Make `check-links.sh` fail when it has nothing real to check, and fix `start-work.sh`'s usage output.** Both are small defects in the vendored workflow scripts; of the other four it once covered, three were fixed when the scripts were vendored from the docket skill and one by recording `--paths` in `docs/QUALITY.md`.
   - Findings: `workflow-scripts-cwd-root`, `help-ranges-off`
   - Source: [review/2026-10-09-0859-full.md](2026-10-09-0859-full.md), 2026-10-09; narrowed by [review/2026-10-12-1753-incremental.md](2026-10-12-1753-incremental.md), 2026-10-12
   - Starting point: the scripts under `docket/scripts/` are vendored from the docket skill, so fixes go to the skill and arrive by resync. `check-links.sh` falls back to `pwd` outside a repository (`:19`) and accepts a missing file argument or `--help` as a file (`:31-33`); `start-work.sh:14` prints lines 2-10, one past the header.
