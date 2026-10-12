@@ -17,7 +17,7 @@ Each check is a standalone script in `scripts/` (this project's gates) or `docke
 | Script | Runs | Pre-commit | CI on PR | CI on main |
 | --- | --- | --- | --- | --- |
 | `scripts/lint.sh` | `luac -p` on every tracked `.lua` file; fails if none are found | yes | yes | yes |
-| `scripts/luacheck.sh` | luacheck on every tracked `.lua` file with `.luacheckrc`: Lua 5.4, `hs` and `spoon` as read-only globals, the vendored `AClock` and `Emojis` spoons excluded; fails on any warning, if luacheck is missing or if no files are found | | yes | yes |
+| `scripts/luacheck.sh` | luacheck on every tracked `.lua` file with `.luacheckrc`: Lua 5.4, `hs` and `spoon` as read-only globals, the vendored `AClock` and `Emojis` spoons excluded; fails on any warning, if luacheck is missing or if the exclusions leave no files to check | | yes | yes |
 | `docket/scripts/ci.sh` | queue hygiene, relative Markdown links and, on pull requests, PR markers against the queues | | yes | yes |
 | `scripts/check.sh` | lint, luacheck, then `docket/scripts/check-queues.sh --strict` and `docket/scripts/check-links.sh`, in order | | | |
 
