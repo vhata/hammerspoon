@@ -11,8 +11,13 @@ local function tell(cmd)
     end
 end
 
--- Fetch the current track's album art in the background, then call fn with
--- an hs.image, or with nil if there is no art or the fetch fails.
+-- Seconds to wait for album art before sending the notification without it.
+local ARTWORK_TIMEOUT = 3
+
+-- Fetch the current track's album art in the background and call fn exactly
+-- once, within ARTWORK_TIMEOUT seconds: with an hs.image, or with nil if there
+-- is no art, the fetch fails or it is too slow. Art that arrives later is
+-- dropped.
 local function albumart(fn)
     local uri = tell('artwork url of current track')
     -- imageFromURL never calls back for a URL it cannot parse, so check with
@@ -21,7 +26,21 @@ local function albumart(fn)
         fn(nil)
         return
     end
-    hs.image.imageFromURL(uri, fn)
+    -- Whichever of the fetch and the timer finishes first calls fn; timer is
+    -- nil from then on, so the other is a no-op. Both callbacks capture timer,
+    -- which keeps it referenced until it fires or is stopped; clearing it
+    -- then lets it be collected.
+    local timer
+    local function finish(image)
+        if not timer then
+            return
+        end
+        timer:stop()
+        timer = nil
+        fn(image)
+    end
+    timer = hs.timer.doAfter(ARTWORK_TIMEOUT, function() finish(nil) end)
+    hs.image.imageFromURL(uri, finish)
 end
 
 local function spotifyPlaying()

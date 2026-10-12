@@ -11,7 +11,7 @@ What the configuration is now and the invariants reviews check.
 - `overlay.lua`: a centred borderless webview that Escape dismisses; `overlay.new()` returns one with its own `toggle(build)`.
 - `cheatsheet.lua`: renders `~/.config/nvim/CHEATSHEET.md` in an `overlay.lua` webview using the vendored `marked.min.js`.
 - `expanse.lua`: Cmd+Alt+E chooser over the external `~/bin/expanse` text-expansion tool; the chosen expansion goes to the clipboard.
-- `spotify.lua`: F14 or keypad `/` shows a now-playing notification with album art.
+- `spotify.lua`: F14 or keypad `/` shows a now-playing notification with album art, or without it if the art has not loaded within three seconds.
 - `Spoons/FloatCalendar.spoon`: the user's own month calendar overlay.
 - `Spoons/AClock.spoon`, `Spoons/Emojis.spoon`: vendored upstream spoons. `Emojis` carries a local patch that removes its window filter (see `docs/DECISIONS.md`).
 

@@ -2,6 +2,12 @@
 
 Non-obvious choices and their trade-offs, dated, newest section first. Read the relevant entry before changing a mechanism that looks odd. Choices made autonomously under a delegation are recorded here for the user to review; an entry is a record, not a claim that the capability is complete.
 
+## 2026-10-12
+
+| Decision | Reason and trade-off |
+| --- | --- |
+| The now-playing notification waits at most three seconds (`ARTWORK_TIMEOUT` in `spotify.lua`) for album art, then is sent without it; art that arrives later is dropped rather than replacing or resending the notification. | Since the fetch became asynchronous the notification waited for it, which on a slow or dead link could be as long as the system URL timeout. One notification per press keeps a slow link from producing a second one after the first has been read. Cost: on a link slower than the timeout the notification never has art, even when the image would have arrived a moment later. |
+
 ## 2026-10-11
 
 | Decision | Reason and trade-off |
