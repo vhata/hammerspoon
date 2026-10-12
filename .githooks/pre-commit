@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-# Syntax-check the tracked Lua files before each commit. Checks only; never
-# rewrites files.
+# Syntax-check and luacheck the tracked Lua files before each commit. Checks
+# only; never rewrites files.
 set -euo pipefail
-exec bash "$(git rev-parse --show-toplevel)/scripts/lint.sh"
+root="$(git rev-parse --show-toplevel)"
+bash "$root/scripts/lint.sh"
+bash "$root/scripts/luacheck.sh"
