@@ -29,7 +29,7 @@ What the configuration is now and the invariants reviews check.
 - Callbacks run on Hammerspoon's main thread. A blocking call (`hs.execute`, synchronous URL fetch, slow AppleScript) freezes every hotkey until it returns.
 - No Spaces-aware `hs.window.filter` (`setCurrentSpace`, `defaultCurrentSpace`, a `currentSpace` filter field). One makes every Space change re-query every app's windows on the main thread, which the always-on `keyDown` leader tap turns into delayed typing.
 - Event taps that return `true` swallow the event system-wide; they must be narrow and removed when their overlay closes.
-- Transient UI takes global keys only while it is visible, and only the exact combination it means (Escape without modifiers, not every keycode 53).
+- Transient UI takes global keys only while it is visible, on the current Space as well as on screen, and only the exact combination it means (Escape without modifiers, not every keycode 53).
 
 ## Isolation for concurrent work
 
