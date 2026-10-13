@@ -27,5 +27,18 @@ Only work promoted from whole-codebase reviews belongs here. Every entry is read
   - Findings: `floatcalendar-keys-taken-off-space`
   - Source: [review/2026-10-12-1753-incremental.md](2026-10-12-1753-incremental.md), 2026-10-12
   - Starting point: confirm first in the running app (`spoon.FloatCalendar.canvas:behaviorAsLabels()`, then open the calendar and swipe to another Space). If it reproduces, set `self.canvas:behavior("canJoinAllSpaces")` in `obj:init()` in `Spoons/FloatCalendar.spoon/init.lua`, or hide the calendar from an `hs.spaces.watcher`.
+- [MODULES] `overlay-follow-spaces` — **Stop an open cheatsheet or leader help taking Escape on a Space where it is not shown, and give the overlay one deliberate window level.** A Space switch leaves the overlay's Escape tap running, and `:bringToFront(true)` silently replaces the level set just before it.
+  - Findings: `overlay-keys-taken-off-space`, `overlay-level-overridden`
+  - Source: [review/2026-10-13-2309-full.md](2026-10-13-2309-full.md), 2026-10-13
+  - Related: `floatcalendar-follow-spaces`
+  - Starting point: confirm first in the running app (open the cheatsheet, check `:behaviorAsLabels()` on the webview, swipe to another Space, press Escape). If it reproduces, set `canJoinAllSpaces` on the webview in `o.toggle` in `overlay.lua`, or close the overlay when it is not on the current Space, matching whatever `floatcalendar-follow-spaces` does. Then keep one of `:level(...)` and `:bringToFront(true)`.
+- [TOOLING] `lua-gate-file-checks` — **Make the Lua gates check exactly the first-party files that exist on disk.** An unstaged deletion of a tracked `.lua` file makes `scripts/lint.sh` and `scripts/luacheck.sh` fail every commit, and widening `exclude_files` past the vendored spoons still passes luacheck.
+  - Findings: `lint-unstaged-deletion-blocks-commit`, `luacheck-partial-exclusion-silent`
+  - Source: [review/2026-10-13-2309-full.md](2026-10-13-2309-full.md), 2026-10-13
+  - Starting point: skip listed paths that do not exist in both scripts; in `scripts/luacheck.sh`, compare the checked count with the tracked Lua files outside `Spoons/AClock.spoon/` and `Spoons/Emojis.spoon/` and fail when they differ.
+- [TOOLING] `ci-checkout-v5` — **Move CI off the deprecated Node 20 checkout action.** Both jobs use `actions/checkout@v4`, which runs only because GitHub forces it onto Node 24.
+  - Findings: `ci-checkout-node20`
+  - Source: [review/2026-10-13-2309-full.md](2026-10-13-2309-full.md), 2026-10-13
+  - Starting point: `actions/checkout@v5` at `.github/workflows/ci.yml:33` and `:43`. A CI change, so it needs the user's go-ahead.
 
 ## Unprioritized
