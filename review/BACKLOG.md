@@ -39,6 +39,6 @@ Only work promoted from whole-codebase reviews belongs here. Every entry is read
 - [TOOLING] `ci-checkout-v5` — **Move CI off the deprecated Node 20 checkout action.** Both jobs use `actions/checkout@v4`, which runs only because GitHub forces it onto Node 24.
   - Findings: `ci-checkout-node20`
   - Source: [review/2026-10-13-2309-full.md](2026-10-13-2309-full.md), 2026-10-13
-  - Starting point: `actions/checkout@v5` at `.github/workflows/ci.yml:33` and `:43`. A CI change, so it needs the user's go-ahead.
+  - Starting point: `actions/checkout@v5` or later at `.github/workflows/ci.yml:33` and `:43`. A CI change, so it needs the user's go-ahead.
 
 ## Unprioritized
