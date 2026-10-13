@@ -12,7 +12,7 @@ Read when changing code or preparing a PR. This document describes the gates as 
 
 ## Gates
 
-Each check is a standalone script in `scripts/` (this project's gates) or `docket/scripts/` (the vendored workflow validators), runnable from any directory, exiting non-zero on failure. The hook, CI and agents run the same scripts.
+Each check is a standalone script in `scripts/` (this project's gates) or `docket/scripts/` (the vendored workflow validators), exiting non-zero on failure. The `scripts/` gates find the repository from their own location and run from any directory; the `docket/scripts/` validators find it from the current directory, so run them from anywhere inside the repository. The hook, CI and agents run the same scripts.
 
 | Script | Runs | Pre-commit | CI on PR | CI on main |
 | --- | --- | --- | --- | --- |
@@ -49,6 +49,7 @@ What the vendored review guide ([`docket/CODE_REVIEW_GUIDE.md`](../docket/CODE_R
 
 - Focus areas: the review-focus list under [What quality means here](#what-quality-means-here).
 - Baseline commands beyond `bash scripts/check.sh`: none. No headless runtime exists; behaviour is checked by reloading the live config in Hammerspoon and reading its console.
+- Maintained source, for `bash docket/scripts/review-due.sh --paths ":(glob)*.lua Spoons/FloatCalendar.spoon scripts .githooks .github .luacheckrc"`: the top-level modules, the user's own spoon and the tooling. Without `--paths` the vendored spoons (mostly the generated Emojis data) dominate the line count and the full-review churn threshold is never reached. `:(glob)` keeps `*.lua` to the top level.
 - Drift checks for an incremental review: hotkeys and leader bindings documented in `README.md` against `init.lua` and the modules; this document against the hook and CI; `bash ~/.claude/skills/docket/install.sh --check` for drift in `docket/`.
 
 ## PR evidence

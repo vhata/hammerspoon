@@ -19,9 +19,13 @@ Only work promoted from whole-codebase reviews belongs here. Every entry is read
   - Findings: `leader-tap-ignores-mouse`, `leader-unbound-key-stays-live`
   - Source: [review/2026-10-09-0859-full.md](2026-10-09-0859-full.md), 2026-10-09
   - Starting point: add mouse-down and scroll events to `M.tap` in `leader.lua` and reset the tap state on them; record each modal's bound keys in `build` and call `deactivate()` from the tap's `keyDown` branch when the active layer does not bind the key.
-- [TOOLING] `workflow-script-hygiene` — **Fix the small defects in the workflow scripts: root detection, churn threshold, temp file, help output, claim matching and the queue list.** Each is minor, they share one directory, and together they make the gates and claim checks say what they mean.
-  - Findings: `review-due-vendored-dilution`, `workflow-scripts-cwd-root`, `check-links-tempfile-in-root`, `help-ranges-off`, `claim-check-substring-match`, `start-work-queue-list`
-  - Source: [review/2026-10-09-0859-full.md](2026-10-09-0859-full.md), 2026-10-09
-  - Starting point: the snapshot lists each site. The scripts under `docket/scripts/` are vendored from the docket skill, so fixes go to the skill and arrive by resync; the skill's current copies already match local branches and worktrees by whole component (pull request head branches still by substring) and write the link checker's scratch files under `mktemp`, so re-verify each finding against them. Excluding vendored paths from `review-due.sh` needs a `--paths` argument that no document records yet.
+- [TOOLING] `workflow-script-hygiene` — **Make `check-links.sh` fail when it has nothing real to check, and fix `start-work.sh`'s usage output.** Both are small defects in the vendored workflow scripts; of the other four it once covered, three were fixed when the scripts were vendored from the docket skill and one by recording `--paths` in `docs/QUALITY.md`.
+  - Findings: `workflow-scripts-cwd-root`, `help-ranges-off`
+  - Source: [review/2026-10-09-0859-full.md](2026-10-09-0859-full.md), 2026-10-09; narrowed by [review/2026-10-12-1753-incremental.md](2026-10-12-1753-incremental.md), 2026-10-12
+  - Starting point: the scripts under `docket/scripts/` are vendored from the docket skill, so fixes go to the skill and arrive by resync. `check-links.sh` falls back to `pwd` outside a repository (`:19`) and accepts a missing file argument or `--help` as a file (`:31-33`); `start-work.sh:14` prints lines 2-10, one past the header.
+- [SPOONS] `floatcalendar-follow-spaces` — **Stop the open calendar taking keys on a Space where it is not shown.** A Space switch does not close it, so its tap keeps swallowing arrows, R and Escape meant for the app on the new Space.
+  - Findings: `floatcalendar-keys-taken-off-space`
+  - Source: [review/2026-10-12-1753-incremental.md](2026-10-12-1753-incremental.md), 2026-10-12
+  - Starting point: confirm first in the running app (`spoon.FloatCalendar.canvas:behaviorAsLabels()`, then open the calendar and swipe to another Space). If it reproduces, set `self.canvas:behavior("canJoinAllSpaces")` in `obj:init()` in `Spoons/FloatCalendar.spoon/init.lua`, or hide the calendar from an `hs.spaces.watcher`.
 
 ## Unprioritized
