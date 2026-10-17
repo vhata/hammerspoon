@@ -20,7 +20,7 @@ What the configuration is now and the invariants reviews check.
 ## Shared interfaces
 
 - `leader.setup(tree)` and its item format (`key`, `label`, and `fn` or `items`), and the leader trigger keys (right Ctrl keycode 62, right Shift keycode 60).
-- `hotkeys.bind(mods, key, label, fn)`: every global hotkey goes through it. A direct `hs.hotkey.bind` works but is missing from the help.
+- `hotkeys.bind(mods, key, label, fn)`: every first-party global hotkey goes through it. A direct `hs.hotkey.bind` works but is missing from the help, as is the vendored AClock's Escape, bound directly while the clock shows.
 - External command the config shells out to: `~/bin/expanse` (`dump` and `get -- <short>`). It lives outside this repository.
 - `~/.config/nvim/CHEATSHEET.md`, owned by the user's Neovim config.
 - The Obsidian vaults named `Personal` and `Books`, opened by name through `obsidian://new`. The note naming copies `~/bin/intake` (`Intake/YYYY-MM-DD HHMMSS`); the two are separate code.

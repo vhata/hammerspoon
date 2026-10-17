@@ -47,13 +47,14 @@ local function newPrompt(vault)
     return p
 end
 
--- Open the capture prompt for vault, empty.
+-- Open the capture prompt for vault, empty, or close it if it is open.
 function M.prompt(vault)
     local p = prompts[vault]
     if not p then
         p = newPrompt(vault)
         prompts[vault] = p
     end
+    if p.chooser:isVisible() then p.chooser:hide(); return end
     p.chooser:query("")
     p.update("")
     p.chooser:show()

@@ -10,21 +10,6 @@ M.hyper = {"cmd", "alt", "ctrl", "shift"}
 -- the hotkey here also keeps it from being garbage-collected.
 local bound = {}
 
--- Bind fn to mods+key system-wide, labelled for the help. Returns the
--- hs.hotkey, or nil after a console message if the key does not exist on
--- this layout or macOS refused the combination; either way a failed binding
--- never fails the reload and never appears in the help.
-function M.bind(mods, key, label, fn)
-    local ok, hotkey = pcall(hs.hotkey.bind, mods, key, fn)
-    if not ok or not hotkey then
-        print("hotkeys: could not bind " .. table.concat(mods, "+") .. "+" .. key .. " (" .. label .. "): "
-            .. (ok and "macOS refused it" or tostring(hotkey)))
-        return nil
-    end
-    bound[#bound + 1] = { mods = mods, key = key, label = label, hotkey = hotkey }
-    return hotkey
-end
-
 local SYMBOLS = { ctrl = "⌃", alt = "⌥", shift = "⇧", cmd = "⌘" }
 local ORDER = {"ctrl", "alt", "shift", "cmd"}
 
@@ -49,6 +34,22 @@ function M.display(mods, key)
         or (key:match("^pad.") and "Keypad " .. key:sub(4))
         or key:upper()
     return prefix .. name
+end
+
+-- Bind fn to mods (a table of modifier names) plus key (an hs.keycodes.map
+-- name) system-wide, labelled for the help. Returns the hs.hotkey, or nil
+-- after a console message if the key does not exist on this layout or macOS
+-- refused the combination; either way a failed binding never fails the
+-- reload and never appears in the help.
+function M.bind(mods, key, label, fn)
+    local ok, hotkey = pcall(hs.hotkey.bind, mods, key, fn)
+    if not ok or not hotkey then
+        print("hotkeys: could not bind " .. M.display(mods, key) .. " (" .. label .. "): "
+            .. (ok and "macOS refused it" or tostring(hotkey)))
+        return nil
+    end
+    bound[#bound + 1] = { mods = mods, key = key, label = label, hotkey = hotkey }
+    return hotkey
 end
 
 -- { display, label } for each bound hotkey that is live now, in the order the
