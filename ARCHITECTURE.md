@@ -8,7 +8,8 @@ What the configuration is now and the invariants reviews check.
 - `reload.lua`: watches `~/.hammerspoon` and reloads one second after the last change to a `.lua` or `.json` file, ignoring hidden directories (`.git`, `.worktrees`) and nested checkouts.
 - `leader.lua`: double-tap right Ctrl or right Shift opens the leader. `leader.setup(tree)` takes the whole key tree as one table of actions and nested groups, builds one `hs.hotkey.modal` per group, and gives each layer one second to receive a key. This is the shared interface the other modules hang off.
 - `leaderhelp.lua`: the overlay behind `?` in any leader layer. It renders the items `leader.setup` actually bound and the global hotkeys from `hotkeys.list()`, so the help cannot drift from the keys.
-- `hotkeys.lua`: `hotkeys.bind(mods, key, label, fn)` binds a global hotkey and records it only if it registered; `hotkeys.list()` returns the recorded hotkeys that are live, by checking them against `hs.hotkey.getHotkeys()`.
+- `hotkeys.lua`: `hotkeys.bind(mods, key, label, fn)` binds a global hotkey and records it only if it registered; `hotkeys.list()` returns the recorded hotkeys that are live, by checking them against `hs.hotkey.getHotkeys()`. `hotkeys.hyper` is the four-modifier Hyper chord.
+- `capture.lua`: `capture.prompt(vault)` opens a one-line chooser and turns the text into a new note in that vault's `Intake/` folder through an `obsidian://new` URL, named as `~/bin/intake` names its notes. `init.lua` binds Hyper+K (Personal) and Hyper+B (Books).
 - `overlay.lua`: a centred borderless webview that Escape dismisses; `overlay.new()` returns one with its own `toggle(build)`.
 - `cheatsheet.lua`: renders `~/.config/nvim/CHEATSHEET.md` in an `overlay.lua` webview using the vendored `marked.min.js`.
 - `expanse.lua`: Cmd+Alt+E chooser over the external `~/bin/expanse` text-expansion tool; the chosen expansion goes to the clipboard.
@@ -22,6 +23,8 @@ What the configuration is now and the invariants reviews check.
 - `hotkeys.bind(mods, key, label, fn)`: every global hotkey goes through it. A direct `hs.hotkey.bind` works but is missing from the help.
 - External command the config shells out to: `~/bin/expanse` (`dump` and `get -- <short>`). It lives outside this repository.
 - `~/.config/nvim/CHEATSHEET.md`, owned by the user's Neovim config.
+- The Obsidian vaults named `Personal` and `Books`, opened by name through `obsidian://new`. The note naming copies `~/bin/intake` (`Intake/YYYY-MM-DD HHMMSS`); the two are separate code.
+- Hyper comes from Karabiner-Elements mapping Caps Lock to Ctrl+Alt+Shift+Cmd, outside this repository.
 
 ## Invariants
 

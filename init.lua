@@ -11,6 +11,8 @@ end
 hs.loadSpoon("AClock")
 hs.loadSpoon("Emojis")
 hs.loadSpoon("FloatCalendar")
+local hotkeys = require("hotkeys")
+local capture = require("capture")
 require("expanse")
 require("spotify")
 local cheatsheet = require("cheatsheet")
@@ -46,3 +48,6 @@ leader.setup({
     } },
 })
 
+-- Global hotkeys, listed in the leader's help alongside the tree.
+hotkeys.bind(hotkeys.hyper, "k", "New note in Personal › Intake", function() capture.prompt("Personal") end)
+hotkeys.bind(hotkeys.hyper, "b", "New note in Books › Intake", function() capture.prompt("Books") end)
