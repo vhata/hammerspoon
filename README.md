@@ -6,7 +6,7 @@ For use with [Hammerspoon](https://www.hammerspoon.org/). Clone to `~/.hammerspo
 
 | Keys | Action |
 | --- | --- |
-| Double-tap right Ctrl or right Shift, then ? | Overlay listing every leader key, generated from the tree in `init.lua` |
+| Double-tap right Ctrl or right Shift, then ? | Overlay listing every leader key and every global hotkey, generated from what actually bound |
 | Double-tap, then O, C | Toggle the floating clock |
 | Double-tap, then O, L | Toggle the floating calendar, open on the current month (Left and Right change month, Up and Down change year, R returns to today, Esc closes; any other key or a click closes it and goes through to the app) |
 | Double-tap, then O, E | Emoji picker |
@@ -15,6 +15,8 @@ For use with [Hammerspoon](https://www.hammerspoon.org/). Clone to `~/.hammerspo
 | Double-tap, then A, T / S / B / W / M | Focus or launch Todoist / Signal / Bitwarden / WhatsApp / Spotify |
 | Cmd+Alt+E | Text-expansion picker (needs `~/bin/expanse`) |
 | F14 or keypad / | Spotify now-playing notification |
+
+Global hotkeys are bound through `hotkeys.bind` in `hotkeys.lua` so that the help overlay lists them.
 
 The config reloads automatically a second after the last change to a `.lua` or `.json` file under `~/.hammerspoon`. Changes under `.git/` or other hidden directories, and inside nested checkouts such as worktrees, are ignored.
 

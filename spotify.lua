@@ -72,5 +72,6 @@ local function spotifyPlaying()
     end)
 end
 
-hs.hotkey.bind({}, "f14", spotifyPlaying)
-hs.hotkey.bind({}, "pad/", spotifyPlaying)
+local hotkeys = require("hotkeys")
+hotkeys.bind({}, "f14", "Spotify now playing", spotifyPlaying)
+hotkeys.bind({}, "pad/", "Spotify now playing", spotifyPlaying)

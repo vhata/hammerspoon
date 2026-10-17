@@ -2,8 +2,8 @@
 -- press keys to walk the tree passed to M.setup. Each group in the tree is
 -- its own hs.hotkey.modal: pressing a group's key swaps to that group's
 -- modal and restarts the timeout; pressing an action's key closes the
--- leader and runs the action. Escape closes it and "?" shows the whole tree
--- from any layer.
+-- leader and runs the action. Escape closes it and "?" shows the whole tree,
+-- with the global hotkeys from hotkeys.lua, from any layer.
 local help = require("leaderhelp")
 
 local M = {}

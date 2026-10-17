@@ -2,6 +2,12 @@
 
 Non-obvious choices and their trade-offs, dated, newest section first. Read the relevant entry before changing a mechanism that looks odd. Choices made autonomously under a delegation are recorded here for the user to review; an entry is a record, not a claim that the capability is complete.
 
+## 2026-10-17
+
+| Decision | Reason and trade-off |
+| --- | --- |
+| Global hotkeys are bound through `hotkeys.bind` (`hotkeys.lua`), which records a hotkey only when `hs.hotkey.bind` returned one, and the leader's `?` overlay lists those of the recorded hotkeys that `hs.hotkey.getHotkeys()` returns when it opens. | The help is built from the same calls that bind the keys, as the leader tree already was, so a key that failed to bind (unknown on the layout, refused by macOS) never appears, and `getHotkeys()`, which returns the one hotkey answering each combination, drops one that was later disabled or shadowed by another binding of the same keys. The labels live in the registry rather than in `getHotkeys()`'s descriptions because those come from the hotkey's alert message, and a hotkey with a message flashes it as an alert on every press unless `hs.hotkey.alertDuration` is set to 0 for everything. Cost: a module that calls `hs.hotkey.bind` directly still works but is missing from the help; keys that are live only while something is open (the calendar's arrows, Escape on overlays, the vendored AClock's Escape) are not listed. |
+
 ## 2026-10-12
 
 | Decision | Reason and trade-off |

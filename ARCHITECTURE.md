@@ -7,7 +7,8 @@ What the configuration is now and the invariants reviews check.
 - `init.lua`: entry point. Starts the reload watcher, then loads the spoons and modules and declares the leader tree.
 - `reload.lua`: watches `~/.hammerspoon` and reloads one second after the last change to a `.lua` or `.json` file, ignoring hidden directories (`.git`, `.worktrees`) and nested checkouts.
 - `leader.lua`: double-tap right Ctrl or right Shift opens the leader. `leader.setup(tree)` takes the whole key tree as one table of actions and nested groups, builds one `hs.hotkey.modal` per group, and gives each layer one second to receive a key. This is the shared interface the other modules hang off.
-- `leaderhelp.lua`: the overlay behind `?` in any leader layer. It renders the items `leader.setup` actually bound, so the help cannot drift from the keys.
+- `leaderhelp.lua`: the overlay behind `?` in any leader layer. It renders the items `leader.setup` actually bound and the global hotkeys from `hotkeys.list()`, so the help cannot drift from the keys.
+- `hotkeys.lua`: `hotkeys.bind(mods, key, label, fn)` binds a global hotkey and records it only if it registered; `hotkeys.list()` returns the recorded hotkeys that are live, by checking them against `hs.hotkey.getHotkeys()`.
 - `overlay.lua`: a centred borderless webview that Escape dismisses; `overlay.new()` returns one with its own `toggle(build)`.
 - `cheatsheet.lua`: renders `~/.config/nvim/CHEATSHEET.md` in an `overlay.lua` webview using the vendored `marked.min.js`.
 - `expanse.lua`: Cmd+Alt+E chooser over the external `~/bin/expanse` text-expansion tool; the chosen expansion goes to the clipboard.
@@ -18,6 +19,7 @@ What the configuration is now and the invariants reviews check.
 ## Shared interfaces
 
 - `leader.setup(tree)` and its item format (`key`, `label`, and `fn` or `items`), and the leader trigger keys (right Ctrl keycode 62, right Shift keycode 60).
+- `hotkeys.bind(mods, key, label, fn)`: every global hotkey goes through it. A direct `hs.hotkey.bind` works but is missing from the help.
 - External command the config shells out to: `~/bin/expanse` (`dump` and `get -- <short>`). It lives outside this repository.
 - `~/.config/nvim/CHEATSHEET.md`, owned by the user's Neovim config.
 

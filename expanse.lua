@@ -93,4 +93,4 @@ local function pick_expanse()
     chooser:show()
 end
 
-hs.hotkey.bind({"cmd", "alt"}, "e", pick_expanse)
+require("hotkeys").bind({"cmd", "alt"}, "e", "Text-expansion picker", pick_expanse)
