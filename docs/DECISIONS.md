@@ -2,6 +2,14 @@
 
 Non-obvious choices and their trade-offs, dated, newest section first. Read the relevant entry before changing a mechanism that looks odd. Choices made autonomously under a delegation are recorded here for the user to review; an entry is a record, not a claim that the capability is complete.
 
+## 2026-10-17
+
+| Decision | Reason and trade-off |
+| --- | --- |
+| Global hotkeys are bound through `hotkeys.bind` (`hotkeys.lua`), which records a hotkey only when `hs.hotkey.bind` returned one, and the leader's `?` overlay lists those of the recorded hotkeys that `hs.hotkey.getHotkeys()` returns when it opens. | The help is built from the same calls that bind the keys, as the leader tree already was, so a key that failed to bind (unknown on the layout, refused by macOS) never appears, and `getHotkeys()`, which returns the one hotkey answering each combination, drops one that was later disabled or shadowed by another binding of the same keys. The labels live in the registry rather than in `getHotkeys()`'s descriptions because those come from the hotkey's alert message, and a hotkey with a message flashes it as an alert on every press unless `hs.hotkey.alertDuration` is set to 0 for everything. Cost: a module that calls `hs.hotkey.bind` directly still works but is missing from the help; keys that are live only while something is open (the calendar's arrows, Escape on overlays, the vendored AClock's Escape) are not listed. |
+| Hyper+K and Hyper+B make the note in Hammerspoon, opening the same `obsidian://new` URL that `~/bin/intake` builds, rather than running the Intake shortcut or `~/bin/intake`. | The shortcut always writes to the Personal vault and its Ask for Input dialog opens through Shortcuts; `~/bin/intake` takes no vault, and changing it is outside this repository. A chooser opens at once, takes the keyboard, and Escape cancels. Cost: the note naming and encoding (`Intake/YYYY-MM-DD HHMMSS`, jq `@uri` percent-encoding) exist in two places, so a change to `~/bin/intake` is not picked up here. |
+| The capture prompt is an `hs.chooser` with one row that mirrors the typed text, not `hs.dialog.textPrompt`. | `textPrompt` runs a modal dialog that blocks Hammerspoon's main thread, and every hotkey and the leader tap with it, until it is answered. The chooser is non-blocking. Cost: input is one line, as the shortcut's Ask for Input also is; Return on an empty prompt makes an empty note, as `~/bin/intake` does with no input. |
+
 ## 2026-10-12
 
 | Decision | Reason and trade-off |

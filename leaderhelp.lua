@@ -1,6 +1,8 @@
--- Renders the leader tree as an overlay. The page is generated from the same
--- items leader.setup bound, so the help cannot drift from the keys.
+-- Renders the leader tree and the global hotkeys as an overlay. The page is
+-- generated from the items leader.setup bound and from hotkeys.list() at the
+-- moment it opens, so the help cannot drift from the keys.
 local overlay = require("overlay")
+local hotkeys = require("hotkeys")
 
 local M = {}
 local view = overlay.new()
@@ -45,7 +47,11 @@ local function render(tree, builtins, trigger)
     local always = {}
     for _, b in ipairs(builtins) do always[#always + 1] = row(b.display, b.label) end
 
+    local global = {}
+    for _, h in ipairs(hotkeys.list()) do global[#global + 1] = row(h.display, h.label) end
+
     local sections = {}
+    if #global > 0 then sections[#sections + 1] = section("Without the leader", table.concat(global)) end
     if #actions > 0 then sections[#sections + 1] = section("Top level", table.concat(actions)) end
     for _, g in ipairs(groups) do sections[#sections + 1] = g end
     sections[#sections + 1] = section("In any layer", table.concat(always))
@@ -64,8 +70,8 @@ local function render(tree, builtins, trigger)
         kbd { display: inline-block; min-width: 14px; text-align: center; background: #313244; color: #f38ba8; padding: 1px 5px; border-radius: 4px; font-family: "SF Mono", Menlo, monospace; font-size: 11px; margin-right: 6px; }
         h2 kbd { font-size: 12px; text-transform: none; }
     </style></head><body>
-    <h1>Leader</h1>
-    <p>]] .. esc(trigger) .. [[, then press the keys below.</p>
+    <h1>Hammerspoon keys</h1>
+    <p>]] .. esc(trigger) .. [[ to open the leader, then press the keys in a group. Keys under Without the leader work anywhere.</p>
     <div id="content">]] .. table.concat(sections) .. [[</div>
     </body></html>]]
 end
