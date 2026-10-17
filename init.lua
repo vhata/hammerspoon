@@ -34,11 +34,15 @@ leader.setup({
     } },
     { key = "a", label = "Apps", items = {
         app("c", "Google Chrome"),
-        -- app("s", "Spotify"),
         app("v", "Vivaldi"),
         app("o", "Obsidian"),
         app("d", "Discord"),
         -- app("w", "Discord Canary"),
-        -- app("g", "Signal"),
+        app("t", "Todoist"),
+        app("s", "Signal"),
+        app("b", "Bitwarden"),
+        app("w", "WhatsApp"),
+        app("m", "Spotify"),
     } },
 })
+

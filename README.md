@@ -12,6 +12,7 @@ For use with [Hammerspoon](https://www.hammerspoon.org/). Clone to `~/.hammerspo
 | Double-tap, then O, E | Emoji picker |
 | Double-tap, then O, V | Neovim cheatsheet from `~/.config/nvim/CHEATSHEET.md` |
 | Double-tap, then A, C / V / O / D | Focus or launch Chrome / Vivaldi / Obsidian / Discord |
+| Double-tap, then A, T / S / B / W / M | Focus or launch Todoist / Signal / Bitwarden / WhatsApp / Spotify |
 | Cmd+Alt+E | Text-expansion picker (needs `~/bin/expanse`) |
 | F14 or keypad / | Spotify now-playing notification |
 
