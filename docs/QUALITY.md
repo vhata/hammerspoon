@@ -41,7 +41,7 @@ None. See `docs/DECISIONS.md`.
 
 ## Branch protection
 
-Applied on 2026-10-07. A pull request is required with zero approving reviews (independent agent review is recorded in `## Review`); required checks `check` and `Queue and PR hygiene`; branches need not be up to date with `main` before merging; linear history required; conversation resolution not required; force pushes and deletions on `main` allowed for the owner (agents never use them); not enforced for administrators, which permits the direct-to-main exceptions in [`docket/CONTRACT.md`](../docket/CONTRACT.md). Squash merging only, PR title and body as the commit message, head branches deleted on merge.
+Applied on 2026-10-07. A pull request is required with zero approving reviews (independent agent review is recorded in a PR comment headed `## Review`); required checks `check` and `Queue and PR hygiene`; branches need not be up to date with `main` before merging; linear history required; conversation resolution not required; force pushes and deletions on `main` allowed for the owner (agents never use them); not enforced for administrators, which permits the direct-to-main exceptions in [`docket/CONTRACT.md`](../docket/CONTRACT.md). Squash merging only, PR title and body as the commit message, head branches deleted on merge.
 
 ## Review inputs
 
@@ -54,4 +54,4 @@ What the vendored review guide ([`docket/CODE_REVIEW_GUIDE.md`](../docket/CODE_R
 
 ## PR evidence
 
-Every PR lists the commands run and their results, the manual steps for any behaviour change, what was not run and why, and the independent review. See [`docket/CODE_REVIEW_GUIDE.md`](../docket/CODE_REVIEW_GUIDE.md).
+Every PR lists the commands run and their results, the manual steps for any behaviour change, and what was not run and why. Independent review is recorded in a PR comment, keeping review-cycle history out of the squash commit message. See [`docket/CODE_REVIEW_GUIDE.md`](../docket/CODE_REVIEW_GUIDE.md).
