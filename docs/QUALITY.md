@@ -12,7 +12,7 @@ Read when changing code or preparing a PR. This document describes the gates as 
 
 ## Gates
 
-Each check is a standalone script in `scripts/` (this project's gates) or `docket/scripts/` (the vendored workflow validators), runnable from any directory, exiting non-zero on failure. The hook, CI and agents run the same scripts.
+Each check is a standalone script in `scripts/` (this project's gates) or `docket/scripts/` (the vendored workflow validators), exiting non-zero on failure. The `scripts/` gates resolve their location and run from any directory; run the vendored validators from inside the repository. The hook, CI and agents run the same scripts.
 
 | Script | Runs | Pre-commit | CI on PR | CI on main |
 | --- | --- | --- | --- | --- |
