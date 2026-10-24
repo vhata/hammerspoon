@@ -50,6 +50,7 @@ What the vendored review guide ([`docket/CODE_REVIEW_GUIDE.md`](../docket/CODE_R
 - Focus areas: the review-focus list under [What quality means here](#what-quality-means-here).
 - Baseline commands beyond `bash scripts/check.sh`: none. No headless runtime exists; behaviour is checked by reloading the live config in Hammerspoon and reading its console.
 - Drift checks for an incremental review: hotkeys and leader bindings documented in `README.md` against `init.lua` and the modules; this document against the hook and CI; `bash ~/.claude/skills/docket/install.sh --check` for drift in `docket/`.
+- Measure maintained-source churn with `bash docket/scripts/review-due.sh --paths ":(glob)*.lua Spoons/FloatCalendar.spoon scripts .githooks .github .luacheckrc"`. Without `--paths`, vendored emoji data dominates the denominator and hides substantial changes to the maintained configuration.
 
 ## PR evidence
 
