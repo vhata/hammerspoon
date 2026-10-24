@@ -24,6 +24,6 @@ The config reloads automatically a second after the last change to a `.lua` or `
 
 ### Working on it
 
-Run `bash scripts/setup.sh` once to install the pre-commit hook, and `bash scripts/check.sh` before opening a PR. Both need `luac` (Lua 5.4) and `luacheck` (`brew install lua luacheck`). Agents (and people) working here follow [AGENTS.md](AGENTS.md). Deferred work is in [TODO.md](TODO.md).
+Run `bash scripts/setup.sh` once to install the pre-commit hook, and `bash scripts/check.sh` before opening a PR. The checks and hook need `luac` and `luacheck` (`brew install lua luacheck`); setup only configures the hook path. Hammerspoon and CI use Lua 5.4, while the local Homebrew Lua is 5.5; the versions can reject different syntax (see [toolchain details](docs/QUALITY.md#gates)). Agents (and people) working here follow [AGENTS.md](AGENTS.md). Deferred work is in [TODO.md](TODO.md).
 
 The repository workflow (agent contract, queues, review ledger, CI) was set up with Claude Code.
