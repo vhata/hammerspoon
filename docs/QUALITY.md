@@ -12,7 +12,7 @@ Read when changing code or preparing a PR. This document describes the gates as 
 
 ## Gates
 
-Each check is a standalone script in `scripts/` (this project's gates) or `docket/scripts/` (the vendored workflow validators), runnable from any directory, exiting non-zero on failure. The hook, CI and agents run the same scripts.
+Each check is a standalone script in `scripts/` (this project's gates) or `docket/scripts/` (the vendored workflow validators), exiting non-zero on failure. The `scripts/` gates resolve their location and run from any directory; run the vendored validators from inside the repository. The hook, CI and agents run the same scripts.
 
 | Script | Runs | Pre-commit | CI on PR | CI on main |
 | --- | --- | --- | --- | --- |
@@ -23,7 +23,7 @@ Each check is a standalone script in `scripts/` (this project's gates) or `docke
 
 The hook lives in `.githooks/pre-commit` and is installed by `bash scripts/setup.sh` (`core.hooksPath`). It runs `scripts/lint.sh`, then `scripts/luacheck.sh`, so committing needs both `luac` and luacheck installed. It checks the working tree rather than the staged content, so a partially staged file is linted as it is on disk. It checks only and never rewrites files, and takes well under a second. Bypassing it is for a broken toolchain only; state the bypass and the equivalent checks in the PR.
 
-Toolchain: CI installs Ubuntu's `lua5.4`, matching the Lua version Hammerspoon embeds. Locally `scripts/lint.sh` prefers `luac5.4` and falls back to whatever `luac` is installed (Homebrew currently ships 5.5), so a local pass on a newer Lua is not proof of a 5.4 pass; CI is. luacheck comes from Ubuntu's `lua-check` package in CI (1.1.2 on 24.04) and from `brew install luacheck` locally (1.2.0); it uses its own parser and checks against the Lua 5.4 standard library whichever Lua runs it. A warning that is deliberate gets an inline `-- luacheck: ignore <code>/<name>` or a `.luacheckrc` entry, each with the reason beside it.
+Toolchain: CI installs Ubuntu's `lua5.4`, matching the Lua version Hammerspoon embeds. Locally `scripts/lint.sh` prefers `luac5.4` and falls back to whatever `luac` is installed (Homebrew currently ships 5.5), so a local pass on a newer Lua is not proof of a 5.4 pass; CI is. Lua 5.5 also rejects assignment to numeric `for` loop variables that Lua 5.4 permits, so a local failure may be a version mismatch. luacheck comes from Ubuntu's `lua-check` package in CI (1.1.2 on 24.04) and from `brew install luacheck` locally (1.2.0); it uses its own parser and checks against the Lua 5.4 standard library whichever Lua runs it. A warning that is deliberate gets an inline `-- luacheck: ignore <code>/<name>` or a `.luacheckrc` entry, each with the reason beside it.
 
 ## Test policy
 
@@ -41,7 +41,7 @@ None. See `docs/DECISIONS.md`.
 
 ## Branch protection
 
-Applied on 2026-10-07. A pull request is required with zero approving reviews (independent agent review is recorded in `## Review`); required checks `check` and `Queue and PR hygiene`; branches need not be up to date with `main` before merging; linear history required; conversation resolution not required; force pushes and deletions on `main` allowed for the owner (agents never use them); not enforced for administrators, which permits the direct-to-main exceptions in [`docket/CONTRACT.md`](../docket/CONTRACT.md). Squash merging only, PR title and body as the commit message, head branches deleted on merge.
+Applied on 2026-10-07. A pull request is required with zero approving reviews (independent agent review is recorded in a PR comment headed `## Review`); required checks `check` and `Queue and PR hygiene`; branches need not be up to date with `main` before merging; linear history required; conversation resolution not required; force pushes and deletions on `main` allowed for the owner (agents never use them); not enforced for administrators, which permits the direct-to-main exceptions in [`docket/CONTRACT.md`](../docket/CONTRACT.md). Squash merging only, PR title and body as the commit message, head branches deleted on merge.
 
 ## Review inputs
 
@@ -50,7 +50,8 @@ What the vendored review guide ([`docket/CODE_REVIEW_GUIDE.md`](../docket/CODE_R
 - Focus areas: the review-focus list under [What quality means here](#what-quality-means-here).
 - Baseline commands beyond `bash scripts/check.sh`: none. No headless runtime exists; behaviour is checked by reloading the live config in Hammerspoon and reading its console.
 - Drift checks for an incremental review: hotkeys and leader bindings documented in `README.md` against `init.lua` and the modules; this document against the hook and CI; `bash ~/.claude/skills/docket/install.sh --check` for drift in `docket/`.
+- Measure maintained-source churn with `bash docket/scripts/review-due.sh --paths ":(glob)*.lua Spoons/FloatCalendar.spoon scripts .githooks .github .luacheckrc"`. Without `--paths`, vendored emoji data dominates the denominator and hides substantial changes to the maintained configuration.
 
 ## PR evidence
 
-Every PR lists the commands run and their results, the manual steps for any behaviour change, what was not run and why, and the independent review. See [`docket/CODE_REVIEW_GUIDE.md`](../docket/CODE_REVIEW_GUIDE.md).
+Every PR lists the commands run and their results, the manual steps for any behaviour change, and what was not run and why. Independent review is recorded in a PR comment, keeping review-cycle history out of the squash commit message. See [`docket/CODE_REVIEW_GUIDE.md`](../docket/CODE_REVIEW_GUIDE.md).
