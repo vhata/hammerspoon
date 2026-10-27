@@ -13,7 +13,7 @@ What the configuration is now and the invariants reviews check.
 - `overlay.lua`: a centred borderless webview that Escape dismisses; `overlay.new()` returns one with its own `toggle(build)`.
 - `cheatsheet.lua`: renders `~/.config/nvim/CHEATSHEET.md` in an `overlay.lua` webview using the vendored `marked.min.js`.
 - `expanse.lua`: Hyper+E chooser over the external `~/bin/expanse` text-expansion tool; the chosen expansion goes to the clipboard.
-- `spotify.lua`: F14 or keypad `/` shows a now-playing notification with album art, or without it if the art has not loaded within three seconds.
+- `spotify.lua`: exports the Spotify actions for leader `s`; F14 and keypad `/` also show its now-playing notification with album art, or without it if the art has not loaded within three seconds. New playback controls run AppleScript through bounded `hs.task` processes. A separate task slot saves a captured track URI through `scripts/spotify-like.py`, using the existing Python 3.12 `spotify-cli` login.
 - `Spoons/FloatCalendar.spoon`: the user's own month calendar overlay.
 - `Spoons/AClock.spoon`, `Spoons/Emojis.spoon`: vendored upstream spoons. `Emojis` carries two local changes: removal of its window filter and a 15-row chooser (see `docs/DECISIONS.md`).
 
@@ -21,6 +21,7 @@ What the configuration is now and the invariants reviews check.
 
 - `leader.setup(tree)` and its item format (`key`, `label`, and `fn` or `items`), and the leader trigger keys (right Ctrl keycode 62, right Shift keycode 60).
 - `hotkeys.bind(mods, key, label, fn)`: every first-party global hotkey goes through it. A direct `hs.hotkey.bind` works but is missing from the help, as is the vendored AClock's Escape, bound directly while the clock shows.
+- Spotify liking: `~/.venv/3.12/bin/python` runs `scripts/spotify-like.py`, which imports the installed `spotify-cli` authentication helper and calls Spotify’s save-library API. Exit codes: 0 saved, 2 failed/invalid, 3 authorization required, 4 missing dependency. See [setup](README.md#spotify-likes).
 - External command the config shells out to: `~/bin/expanse` (`dump` and `get -- <short>`). It lives outside this repository.
 - `~/.config/nvim/CHEATSHEET.md`, owned by the user's Neovim config.
 - The Obsidian vaults named `Personal` and `Books`, opened by name through `obsidian://new`. The note naming copies `~/bin/intake` (`Intake/YYYY-MM-DD HHMMSS`); the two are separate code.

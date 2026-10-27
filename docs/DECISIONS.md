@@ -2,6 +2,13 @@
 
 Non-obvious choices and their trade-offs, dated, newest section first. Read the relevant entry before changing a mechanism that looks odd. Choices made autonomously under a delegation are recorded here for the user to review; an entry is a record, not a claim that the capability is complete.
 
+## 2026-10-26
+
+| Decision | Reason and trade-off |
+| --- | --- |
+| Spotify's new leader controls execute fixed AppleScript through `hs.task`, with a five-second Apple Event timeout and an eight-second process deadline. Playback commands share one in-flight slot; liking has its own. | A slow Spotify app or permission prompt must not freeze Hammerspoon. Commands that arrive while the same slot is busy are reported instead of racing. Cost: rapidly repeating a command while it is still running requires another leader sequence. The existing now-playing notification retains its metadata and artwork path. |
+| Liking captures the desktop app's track URI, then calls `PUT /v1/me/library` through the existing Python 3.12 `spotify-cli` authentication helper. | AppleScript exposes no writable liked state. The CLI's `save .` reads Web API playback, which can differ from the desktop track, and explicit arguments perform a search. Passing the captured URI saves exactly that song and never unlikes it. Cost: the existing login needs `user-library-modify`, the helper depends on the installed CLI's Python API and credential refresh, and network failure can leave the save outcome unknown. Tokens remain under the CLI's management. |
+
 ## 2026-10-17
 
 | Decision | Reason and trade-off |
