@@ -14,7 +14,7 @@ hs.loadSpoon("FloatCalendar")
 local hotkeys = require("hotkeys")
 local capture = require("capture")
 require("expanse")
-require("spotify")
+local spotify = require("spotify")
 local cheatsheet = require("cheatsheet")
 local leader = require("leader")
 
@@ -33,6 +33,20 @@ leader.setup({
             if c:isVisible() then c:hide() else c:show() end
         end },
         { key = "v", label = "Neovim cheatsheet", fn = function() cheatsheet.toggle() end },
+    } },
+    { key = "s", label = "Spotify", items = {
+        { key = "space", label = "Play / pause", fn = spotify.playPause },
+        { key = "l", label = "Like current song", fn = spotify.like },
+        { key = "/", label = "Now playing", fn = spotify.nowPlaying },
+        { key = "n", label = "Next track", fn = spotify.next },
+        { key = "p", label = "Previous track", fn = spotify.previous },
+        { key = "left", label = "Rewind 10 seconds", fn = spotify.rewind },
+        { key = "right", label = "Forward 10 seconds", fn = spotify.forward },
+        { key = "r", label = "Restart track", fn = spotify.restart },
+        { key = "s", label = "Toggle shuffle", fn = spotify.shuffle },
+        { key = "up", label = "Volume up 5%", fn = spotify.volumeUp },
+        { key = "down", label = "Volume down 5%", fn = spotify.volumeDown },
+        app("o", "Spotify"),
     } },
     { key = "a", label = "Apps", items = {
         app("c", "Google Chrome"),
