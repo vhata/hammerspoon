@@ -15,7 +15,7 @@ For use with [Hammerspoon](https://www.hammerspoon.org/). Clone to `~/.hammerspo
 | Double-tap, then A, T / S / B / W / M | Focus or launch Todoist / Signal / Bitwarden / WhatsApp / Spotify |
 | Hyper+K | Type a line; it becomes a new note in the Personal vault's `Intake/` folder, as `~/bin/intake` makes. Press again or Esc to cancel |
 | Hyper+B | The same, in the Books vault's `Intake/` folder |
-| Cmd+Alt+E | Text-expansion picker (needs `~/bin/expanse`) |
+| Hyper+E | Text-expansion picker (needs `~/bin/expanse`) |
 | F14 or keypad / | Spotify now-playing notification |
 
 Hyper is Ctrl+Alt+Shift+Cmd, which Karabiner-Elements maps Caps Lock to. Global hotkeys are bound through `hotkeys.bind` in `hotkeys.lua` so that the help overlay lists them.
