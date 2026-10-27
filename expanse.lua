@@ -1,3 +1,5 @@
+local hotkeys = require("hotkeys")
+
 local MAX_LENGTH = 100
 -- a failure alert shows only the last few lines of expanse's stderr (the end
 -- of a Python traceback); the console gets all of it
@@ -93,4 +95,4 @@ local function pick_expanse()
     chooser:show()
 end
 
-require("hotkeys").bind({"cmd", "alt"}, "e", "Text-expansion picker", pick_expanse)
+hotkeys.bind(hotkeys.hyper, "e", "Text-expansion picker", pick_expanse)

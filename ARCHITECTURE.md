@@ -12,7 +12,7 @@ What the configuration is now and the invariants reviews check.
 - `capture.lua`: `capture.prompt(vault)` opens a one-line chooser and turns the text into a new note in that vault's `Intake/` folder through an `obsidian://new` URL, named as `~/bin/intake` names its notes. `init.lua` binds Hyper+K (Personal) and Hyper+B (Books).
 - `overlay.lua`: a centred borderless webview that Escape dismisses; `overlay.new()` returns one with its own `toggle(build)`.
 - `cheatsheet.lua`: renders `~/.config/nvim/CHEATSHEET.md` in an `overlay.lua` webview using the vendored `marked.min.js`.
-- `expanse.lua`: Cmd+Alt+E chooser over the external `~/bin/expanse` text-expansion tool; the chosen expansion goes to the clipboard.
+- `expanse.lua`: Hyper+E chooser over the external `~/bin/expanse` text-expansion tool; the chosen expansion goes to the clipboard.
 - `spotify.lua`: F14 or keypad `/` shows a now-playing notification with album art, or without it if the art has not loaded within three seconds.
 - `Spoons/FloatCalendar.spoon`: the user's own month calendar overlay.
 - `Spoons/AClock.spoon`, `Spoons/Emojis.spoon`: vendored upstream spoons. `Emojis` carries two local changes: removal of its window filter and a 15-row chooser (see `docs/DECISIONS.md`).
