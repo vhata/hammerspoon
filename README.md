@@ -7,6 +7,7 @@ For use with [Hammerspoon](https://www.hammerspoon.org/). Clone to `~/.hammerspo
 | Keys | Action |
 | --- | --- |
 | Double-tap right Ctrl or right Shift, then ? | Overlay listing every leader key and the global hotkeys bound through `hotkeys.lua`, generated from what actually bound |
+| Double-tap, then E, E | Paste the `email` expansion from Expanse into the focused app |
 | Double-tap, then O, C | Toggle the floating clock |
 | Double-tap, then O, L | Toggle the floating calendar, open on the current month (Left and Right change month, Up and Down change year, R returns to today, Esc closes; any other key or a click closes it and goes through to the app) |
 | Double-tap, then O, E | Emoji picker |
@@ -24,12 +25,26 @@ For use with [Hammerspoon](https://www.hammerspoon.org/). Clone to `~/.hammerspo
 | Double-tap, then S, O | Open Spotify |
 | Hyper+K | Type a line; it becomes a new note in the Personal vault's `Intake/` folder, as `~/bin/intake` makes. Press again or Esc to cancel |
 | Hyper+B | The same, in the Books vault's `Intake/` folder |
-| Hyper+E | Text-expansion picker (needs `~/bin/expanse`) |
+| Hyper+E | Text-expansion picker; copies the selection to the clipboard (needs `~/bin/expanse`) |
 | F14 or keypad / | Spotify now-playing notification |
 
 Hyper is Ctrl+Alt+Shift+Cmd, which Karabiner-Elements maps Caps Lock to. Global hotkeys are bound through `hotkeys.bind` in `hotkeys.lua` so that the help overlay lists them.
 
 The config reloads automatically a second after the last change to a `.lua` or `.json` file under `~/.hammerspoon`. Changes under `.git/` or other hidden directories, and inside nested checkouts such as worktrees, are ignored.
+
+### Expanse shortcuts
+
+Double-tap right Ctrl or right Shift, then `E`, `E` to fetch the named
+`email` expansion from `~/bin/expanse` and paste it with Cmd+V. The text
+stays on the clipboard. Hyper+E opens the existing picker and copies its
+selection without pasting.
+
+Add more single-letter shortcuts in the `Expanse` group in `init.lua`,
+using `expanse.paste("name")` with an existing Expanse name. The leader's
+`?` help lists these shortcuts automatically. Lookup runs in the background;
+a response taking longer than three seconds is discarded. A failed, missing
+or empty expansion leaves the clipboard alone. The paste is cancelled if
+a different window or app has focus when lookup finishes.
 
 ### Spotify likes
 

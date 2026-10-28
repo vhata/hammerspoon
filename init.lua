@@ -13,7 +13,7 @@ hs.loadSpoon("Emojis")
 hs.loadSpoon("FloatCalendar")
 local hotkeys = require("hotkeys")
 local capture = require("capture")
-require("expanse")
+local expanse = require("expanse")
 local spotify = require("spotify")
 local cheatsheet = require("cheatsheet")
 local leader = require("leader")
@@ -25,6 +25,9 @@ end
 -- The leader tree: double-tap right Ctrl or right Shift, then press keys.
 -- See leader.setup for the item format.
 leader.setup({
+    { key = "e", label = "Expanse", items = {
+        { key = "e", label = "Email address", fn = function() expanse.paste("email") end },
+    } },
     { key = "o", label = "Overlays", items = {
         { key = "c", label = "Clock", fn = function() spoon.AClock:toggleShow() end },
         { key = "l", label = "Calendar", fn = function() spoon.FloatCalendar:toggleShow() end },

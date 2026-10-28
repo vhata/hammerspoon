@@ -1,4 +1,8 @@
 local hotkeys = require("hotkeys")
+local M = {}
+
+local PASTE_TIMEOUT = 3
+local pendingPaste = nil
 
 local MAX_LENGTH = 100
 -- a failure alert shows only the last few lines of expanse's stderr (the end
@@ -48,6 +52,22 @@ local function call_expanse(args)
     return output
 end
 
+-- Both paths discard only the newline added by expanse's print(), keeping
+-- whitespace and line breaks that belong to the expansion itself.
+local function expansion_text(name, output)
+    local expando = output:gsub("\r?\n$", "", 1)
+    if expando == "" then
+        -- expanse get prints nothing and exits 0 for an unknown name
+        if output == "" then
+            hs.alert.show('No expansion named "' .. name .. '"')
+        else
+            hs.alert.show('Expansion "' .. name .. '" is empty')
+        end
+        return nil
+    end
+    return expando
+end
+
 local function callback(choice)
     if not choice then
         return
@@ -57,18 +77,56 @@ local function callback(choice)
     if not output then
         return
     end
-    -- expanse prints the expansion with Python's print(), which adds a newline
-    local expando = output:gsub("\r?\n$", "", 1)
-    if expando == "" then
-        -- expanse get prints nothing and exits 0 for an unknown name
-        if output == "" then
-            hs.alert.show('No expansion named "' .. choice.text .. '"')
-        else
-            hs.alert.show('Expansion "' .. choice.text .. '" is empty')
-        end
+    local expando = expansion_text(choice.text, output)
+    if expando then hs.pasteboard.setContents(expando) end
+end
+
+-- Fetch a named expansion without opening the picker or blocking the leader.
+-- Keep the task and deadline referenced; allow only one paste at a time.
+function M.paste(name)
+    if pendingPaste then
+        hs.alert.show("Expanse: a paste is still running")
         return
     end
-    hs.pasteboard.setContents(expando)
+    local window = hs.window.focusedWindow()
+    local app = window and window:application()
+    if not app or hs.application.frontmostApplication() ~= app then
+        hs.alert.show("Expanse: focus a window before pasting")
+        return
+    end
+    local job = {}
+    pendingPaste = job
+    job.task = hs.task.new(os.getenv("HOME") .. "/bin/expanse", function(code, stdout)
+        if job.timer then job.timer:stop() end
+        pendingPaste = nil
+        if job.timedOut then return end
+        if code ~= 0 then
+            hs.alert.show("Expanse: couldn't read expansion " .. name)
+            return
+        end
+        local expando = expansion_text(name, stdout)
+        if not expando then return end
+        -- A slow lookup must not send Cmd+V to a different window or app.
+        if hs.window.focusedWindow() ~= window or hs.application.frontmostApplication() ~= app then
+            hs.alert.show("Expanse: focus changed; paste cancelled")
+            return
+        end
+        if not hs.pasteboard.setContents(expando) then
+            hs.alert.show("Expanse: couldn't write to the clipboard")
+            return
+        end
+        hs.eventtap.keyStroke({"cmd"}, "v", 0, app)
+    end, {"get", "--", name})
+    if not job.task or not job.task:start() then
+        pendingPaste = nil
+        hs.alert.show("Expanse: couldn't start the expansion lookup")
+        return
+    end
+    job.timer = hs.timer.doAfter(PASTE_TIMEOUT, function()
+        job.timedOut = true
+        hs.alert.show("Expanse: expansion lookup timed out; paste cancelled")
+        job.task:terminate()
+    end)
 end
 
 local function get_expanses()
@@ -96,3 +154,5 @@ local function pick_expanse()
 end
 
 hotkeys.bind(hotkeys.hyper, "e", "Text-expansion picker", pick_expanse)
+
+return M
